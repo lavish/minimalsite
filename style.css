@@ -1,0 +1,158 @@
+/*
+ * Author:      Marco Squarcina <lavish@gmail.com>
+ * Date:        20/10/2010
+ * Version:     0.3.1
+ * License:     MIT, see LICENSE for details
+ */
+
+html {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+body {
+	padding: 0;
+	margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+	background-color: #d9e5ec;
+	color: #4b4f61;
+}
+img { 
+	border: 0; 
+    margin: 0;
+    padding: 0;
+}
+a {
+	color: #0066ff;
+	text-decoration: none;
+}
+#container {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	background-color: #ffffff;
+	color: inherit;
+}
+#header {
+    border-bottom: 1px solid #cccccc;
+	padding: 1em 0;
+	margin: 0;
+	width: 100%;
+	background-color: #d9e5ec;
+	color: #666666;
+	text-align: center;
+}
+#path {
+	padding: 5px 10px;
+	margin: 10px 10%;
+	font-size: 0.9em;
+	color: #666666;
+    text-align: left;
+}
+#path a,
+#path a:visited {
+	margin: 0;
+	color: #0066ff;
+	text-decoration: none;
+}
+#path a:hover {
+	text-decoration: underline;
+}
+#main {
+    padding: 0 0 10px 0;
+    margin: 0 10%;
+}
+#menu {
+	float: left;
+	width: 18%;
+	text-align: left;
+	color: inherit;
+    border-right: 1px dotted #cccccc;
+    padding-top: 0;
+}
+#menu ul {
+	margin: 0;
+	padding: 0;
+}
+#menu li {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	width: 100%;
+}
+#menu li a {
+	display: block;
+	position: relative;
+	left: 1px;
+	padding: 0.3em 0 0.3em 10px;
+}
+#menu li a.current {
+	border: 1px dotted #cccccc;
+	border-right: 1px solid #ffffff;
+	background-color: #ffffff;
+	font-weight: bold;
+}
+#menu li a:hover {
+	color: #0066ff;  
+}
+#menu li a.current:hover {
+	background-color: #ffffff;
+}
+#content {
+	float: left;
+	width: 79%;
+	padding: 15px 0 15px 2%;
+	border-top: 1px dotted #cccccc;
+	background-color: #ffffff;
+	text-align: justify;
+}
+#content a,
+#content a:visited {
+	background-color: #fcfeff;
+}
+#content a:hover {
+	text-decoration: underline;
+}
+#content p {
+	margin: .5em 0;
+}
+#content h1 {
+	font-weight: normal;
+	text-transform: uppercase;
+}
+#content h2 {
+	color: #666666;
+	font-weight: normal;
+    text-transform: uppercase;
+}
+#content h3 {
+	border-bottom: 1px #cccccc dotted;
+	color: #374b61;
+	font-weight: normal;
+}
+#content img {
+	padding: 5px;
+	background-color: #eeeeee;
+}
+#content pre {
+	padding: 10px;
+	background-color: #fafafa;
+	color: #444444;
+	font-family: "Andale Mono", "Courier New", Courier, monospace;
+	font-size: 1em;
+}
+#clearer {
+	clear: both;
+}
+#footer {
+	clear: both;
+	margin: 0;
+	padding: 10px 10%;
+	border-top: 1px solid #cccccc;
+	background-color: #d9e5ec;
+	color: #666666;
+	font-size: 0.9em;
+	text-align: right;
+}
