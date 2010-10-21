@@ -1,5 +1,5 @@
 MinimalSite
------------
+===========
 
 minimalsite is a fast minimal static website builder. It generates web pages
 from a file hierarchy with markdown and textile syntax.
