@@ -3,11 +3,11 @@
 minimalsite is a fast minimal static website builder. It generates web pages
 from a file hierarchy with markdown and textile syntax.
 
-						   _                
-		   o          o                   | |     o         
-	 _  _  _       _  _       _  _  _    __,  | |  ,    _|_  _  
-	/ |/ |/ |  |  / |/ |  |  / |/ |/ |  /  |  |/  / \_|  |  |/  
-	  |  |  |_/|_/  |  |_/|_/  |  |  |_/\_/|_/|__/ \/ |_/|_/|__/
+                                                   _                
+                   o          o                   | |     o         
+         _  _  _       _  _       _  _  _    __,  | |  ,    _|_  _  
+        / |/ |/ |  |  / |/ |  |  / |/ |/ |  /  |  |/  / \_|  |  |/  
+          |  |  |_/|_/  |  |_/|_/  |  |  |_/\_/|_/|__/ \/ |_/|_/|__/
 
 
 
