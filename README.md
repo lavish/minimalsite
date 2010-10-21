@@ -16,9 +16,8 @@ from a file hierarchy with markdown and textile syntax.
 In order to run minimalsite you need a working Python 2.X installation and the
 following modules:
 
-* [Python Markdown](http://www.freewisdom.org/projects/python-markdown) for 
-  markdown syntax support
-* [PyTextile](http://loopcore.com/python-textile/) for textile syntax support
+* [Python Markdown][] for markdown syntax support
+* [PyTextile][] for textile syntax support
 
 
 ## Installation
@@ -47,15 +46,23 @@ You can edit "template.py" to fit your needs. See comments inside for help.
 
 ## Misc
 
-Documentation for markdown and textile syntaxes can be found here:
-
-* http://daringfireball.net/projects/markdown/syntax
-* http://en.wikipedia.org/wiki/Textile_(markup_language)
+Please refear to [Markdown Syntax][] and [Textile Syntax][] documentation
+before writing your pages.
 
 
 ## Thanks to
 
-* Anselm R Garbe, providing the idea behind this tool (genosite)
-* Luca Postregna, testing and lots of useful suggestions
+* [Anselm R Garbe][], providing the idea behind this tool ([genosite][])
+* [Luca Postregna][], testing and lots of useful suggestions
 * Josie Panzuto, linguistic revision
-* Emanuele Giaquinta, some tips
+* [Emanuele Giaquinta][], some tips
+
+
+[Python Markdown]:    http://www.freewisdom.org/projects/python-markdown
+[PyTextile]:          http://loopcore.com/python-textile/
+[Markdown Syntax]:    http://daringfireball.net/projects/markdown/syntax
+[Textile Syntax]:     http://en.wikipedia.org/wiki/Textile_(markup_language)
+[Anselm R Garbe]:     http://garbe.us/
+[genosite]:           http://hg.suckless.org/genosite/
+[Luca Postregna]:     http://luca.postregna.name/
+[Emanuele Giaquinta]: http://tomaw.net/~exg/
