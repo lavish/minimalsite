@@ -16,10 +16,9 @@ from a file hierarchy with markdown and textile syntax.
 In order to run minimalsite you need a working Python 2.X installation and the
 following modules:
 
-    * Python Markdown for markdown syntax support
-      http://www.freewisdom.org/projects/python-markdown
-    * PyTextile for textile syntax support
-      http://loopcore.com/python-textile/
+* [Python Markdown](http://www.freewisdom.org/projects/python-markdown) for 
+  markdown syntax support
+* [PyTextile](http://loopcore.com/python-textile/) for textile syntax support
 
 
 ## Installation
