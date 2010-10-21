@@ -2,7 +2,7 @@
 # See LICENSE file for copyright and license details.
 
 PROJECT	= minimalsite
-VERSION	= 0.3.1
+VERSION	= 0.3.2
 OBJ	= ${PROJECT}.pyc template.pyc
 SRC	= ${PROJECT}.py template.py style.css
 
@@ -15,7 +15,7 @@ clean:
 dist: clean
 	@echo creating dist tarball
 	mkdir -p ${PROJECT}-${VERSION}
-	@cp -R README LICENSE Makefile ${SRC} ${PROJECT}-${VERSION}
+	@cp -R README.md LICENSE Makefile ${SRC} ${PROJECT}-${VERSION}
 	@tar --exclude=".*" -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	rm -rf ${PROJECT}-${VERSION}
