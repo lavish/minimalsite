@@ -1,4 +1,5 @@
-# MinimalSite
+MinimalSite
+-----------
 
 minimalsite is a fast minimal static website builder. It generates web pages
 from a file hierarchy with markdown and textile syntax.
@@ -11,7 +12,7 @@ from a file hierarchy with markdown and textile syntax.
 
 
 
-## Requirements
+### Requirements
 
 In order to run minimalsite you need a working Python 2.X installation and the
 following modules:
@@ -20,12 +21,12 @@ following modules:
 * [PyTextile][] for textile syntax support
 
 
-## Installation
+### Installation
 
 There's no need to install the tool: download, unpack and run.
 
 
-## Running minimalsite
+### Running minimalsite
 
 Just type from command line:
 
@@ -39,18 +40,18 @@ Please note that you need to place an index file in in each directory you want
 to parse.
 
 
-## Configuration
+### Configuration
 
 You can edit "template.py" to fit your needs. See comments inside for help.
 
 
-## Misc
+### Misc
 
 Please refear to [Markdown Syntax][] and [Textile Syntax][] documentation
 before writing your pages.
 
 
-## Thanks to
+### Thanks to
 
 * [Anselm R Garbe][], providing the idea behind this tool ([genosite][])
 * [Luca Postregna][], testing and lots of useful suggestions

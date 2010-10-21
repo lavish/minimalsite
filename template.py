@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # Author:      Marco Squarcina <lavish@gmail.com>
 # Date:        21/10/2010
 # Version:     0.3.2
