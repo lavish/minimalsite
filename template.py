@@ -1,6 +1,6 @@
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        21/10/2010
-# Version:     0.3.2
+# Date:        28/10/2010
+# Version:     0.4
 # License:     MIT, see LICENSE for details
 
 import datetime
@@ -29,10 +29,14 @@ src_ext = {"markdown": "md", "textile": "tt"}
 # code you can write "php" here
 obj_ext = "html"
 
+# set the list of pages that should be parsed but you don't want to display n
+# the menu
+hidden = set(["404.md", "500.md", "503.md"])
+
 # set the file name inside your source directory used to determine the last run
 # of minimalsite. Set this variable to "" if you want to generate the html
 # structure at every invocation of minimalsite
-last_run = "minimalsite_lastrun"
+last_run = ".minimalsite_lastrun"
 
 current_time = datetime.datetime.now()
 

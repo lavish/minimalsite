@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        21/10/2010
-# Version:     0.3.2
+# Date:        28/10/2010
+# Version:     0.4
 # License:     MIT, see LICENSE for details
 
 
@@ -37,7 +37,8 @@ def menu(file, dir):
 		# a hidden file, index, or a symlink
 		if(entry[0] == "."
 		or entry.startswith("index.")
-		or os.path.islink(os.path.join(dir, entry))):
+		or os.path.islink(os.path.join(dir, entry))
+		or entry in template.hidden):
 			continue
 		# a markdown file
 		elif(syntax(entry)):

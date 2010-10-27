@@ -2,7 +2,7 @@
 # See LICENSE file for copyright and license details.
 
 PROJECT	= minimalsite
-VERSION	= 0.3.2
+VERSION	= 0.4
 OBJ	= ${PROJECT}.pyc template.pyc
 SRC	= ${PROJECT}.py template.py style.css
 
