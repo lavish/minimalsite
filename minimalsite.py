@@ -114,7 +114,7 @@ def process(dir, margin = ''):
 		src_file = os.path.join(dir, file)
 		if(os.path.islink(src_file)):
 			continue
-		elif(os.path.isfile(src_file) and syntax(src_file) and needs_update(src_file)):
+		elif(os.path.isfile(src_file) and syntax(src_file) and needs_update(dir)):
 			out_file = src_file.split('.')
 			out_file[-1] = template.obj_ext
 			out_file = string.join(out_file, ".")
@@ -143,9 +143,9 @@ def hasindex(dir):
 			return True
 	return False
 
-def needs_update(file):
+def needs_update(dir):
 	if(template_last_change > minimalsite_last_run
-	or os.path.getmtime(file) > minimalsite_last_run):
+	or os.path.getmtime(dir) > minimalsite_last_run):
 		return True
 	return False
 
