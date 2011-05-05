@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        28/10/2010
-# Version:     0.4
+# Date:        04/05/2011
+# Version:     0.5
 # License:     MIT, see LICENSE for details
 
 
@@ -48,7 +48,7 @@ def menu(file, dir):
 				out += '.' + template.obj_ext + '" class="current">'
 			else:
 				out += '.' + template.obj_ext + '">'
-			out += entry.split('.')[0]
+			out += entry.split('.')[0].replace('_', ' ')
 			out += '</a></li>\n'
 		# a directory containing an index file 
 		elif(os.path.isdir(os.path.join(dir, entry))
@@ -56,7 +56,7 @@ def menu(file, dir):
 			out += '\t<li><a href="'
 			out += entry
 			out += '/index.' + template.obj_ext + '">'
-			out += entry
+			out += entry.replace('_', ' ')
 			out += '/</a></li>\n'
 	out += "</ul>"
 	return out
@@ -75,7 +75,7 @@ def path(file):
 			if(i == len(target_path)-1):
 				out += template.home
 			else:
-				out += ' ' + file_path[i].split('.')[0]
+				out += ' ' + file_path[i].split('.')[0].replace('_', ' ')
 		else:
 			out += '<a href="'
 			for a in range(2, len(file_path)-i):
@@ -84,11 +84,11 @@ def path(file):
 			if(i == len(target_path)-1):
 				out += template.home
 			else:
-				out += file_path[i]
+				out += file_path[i].replace('_', ' ')
 			out += '</a> '
 			out += template.path_separator + ' ' 
 			if(i+1 == len(file_path)-1):
-				out += ' ' + file_path[i+1].split('.')[0]
+				out += ' ' + file_path[i+1].split('.')[0].replace('_', ' ')
 	return out
 
 def page(file, dir):
