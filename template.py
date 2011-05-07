@@ -11,6 +11,9 @@ site_name = "My Site"
 # your name
 author = "Author Name"
 
+src_dir = "/tmp/src"
+dst_dir = "/tmp/dst"
+
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user"
 prefix = "/"
@@ -40,7 +43,7 @@ last_run = ".minimalsite_lastrun"
 
 current_time = datetime.datetime.now()
 
-def header(file):
+def header(node):
 	"""Builds the header and returns it to a string."""
 
 	return '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -48,7 +51,7 @@ def header(file):
 	<head>
 		<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 		<meta name="author" content="''' + author + '''" />
-		<title>''' + site_name + ' | ' + file.split('/')[-1].split('.')[0] + '''</title>
+		<title>''' + site_name + ' | ' + node.name + '''</title>
 		<link href="''' + prefix + '''/style.css" rel="stylesheet" type="text/css" media="screen" />
 	</head>
 	<body>
@@ -66,7 +69,7 @@ def header(file):
 				<div id="content">
 '''
 
-def footer(file):
+def footer(node):
 	"""Builds the footer and returns it to a string."""
 
 	return '''

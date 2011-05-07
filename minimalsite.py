@@ -5,12 +5,12 @@
 # Version:     0.5
 # License:     MIT, see LICENSE for details
 
-
 import os
 import codecs
 import string
 import sys
 import template
+import re
 
 try:
 	import markdown
@@ -23,43 +23,78 @@ except ImportError:
 	sys.stderr.write("Module textile not found.\n")
 	del template.src_ext["textile"]
 
-minimalsite_last_run = 0
-template_last_change = os.path.getmtime(os.path.join(os.path.split(__file__)[0], "template.py"))
 
-def menu(file, dir):
-	"""Given the current directory and the file shown, returns a multiline
-	string of the html code for the menu.
+# class definition
 
-	"""
+class Node(object):
+	def __init__(self, src_pathname, parent = None):
+		self.src_pathname = src_pathname
+		self.dst_pathname = get_dst_pathname(src_pathname)
+		self.src_file = os.path.basename(self.src_pathname)
+		self.dst_file = os.path.basename(self.dst_pathname)
+		self.name = get_name(self.dst_pathname)
+		self.parent = parent
+		self.children = []
 
-	out = "<ul>\n"
-	for entry in sorted(os.listdir(dir)):
-		# a hidden file, index, or a symlink
-		if(entry[0] == "."
-		or entry.startswith("index.")
-		or os.path.islink(os.path.join(dir, entry))
-		or entry in template.hidden):
+	def add_child(self, obj):
+		self.children.append(obj)
+
+
+# functions definition
+
+def syntax(pathname):
+	for lang in template.src_ext.keys():
+		if(template.src_ext[lang] == pathname.split('.')[-1]):
+				return lang
+	return ''
+
+def hasindex(pathname):
+	for lang in template.src_ext.keys():
+		if(os.path.isfile(pathname + "/index." + template.src_ext[lang])):
+			return True
+	return False
+
+def get_dst_pathname(src_pathname):
+	# replace extension
+	dst_pathname = src_pathname.split('.')
+	if len(dst_pathname) > 1:
+		dst_pathname[-1] = str(template.obj_ext)
+	dst_pathname = string.join(dst_pathname, '.')
+	# change destination dir
+	dst_pathname = string.join(template.dst_dir.split('/') + dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
+	# remove index numbers for dirs and files
+	return re.sub('\/\d+_', '/', dst_pathname)
+
+def get_name(dst_pathname):
+	name = os.path.basename(dst_pathname)
+	name = os.path.splitext(name)[0]
+	return name.replace('_', ' ')
+
+def menu(node):
+	"""Given the current node, returns a multine string of the menu code."""
+
+	menu = "<ul>\n"
+	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
+		# and index page, no need to include it
+		if(n.dst_file.startswith("index.")
+		or n.dst_file in template.hidden):
 			continue
-		# a markdown file
-		elif(syntax(entry)):
-			out += '\t<li><a href="'
-			out += entry.split('.')[0]
-			if(file.split('/')[-1] == entry):
-				out += '.' + template.obj_ext + '" class="current">'
-			else:
-				out += '.' + template.obj_ext + '">'
-			out += entry.split('.')[0].replace('_', ' ')
-			out += '</a></li>\n'
-		# a directory containing an index file 
-		elif(os.path.isdir(os.path.join(dir, entry))
-		and (hasindex(os.path.join(dir, entry)))):
-			out += '\t<li><a href="'
-			out += entry
-			out += '/index.' + template.obj_ext + '">'
-			out += entry.replace('_', ' ')
-			out += '/</a></li>\n'
-	out += "</ul>"
-	return out
+		# a page
+		elif not n.children:
+			menu += '\t<li><a href='
+			menu += '"' + n.dst_file + '"'
+			if(node == n):
+				menu += ' class="current"'
+			menu += '>' + n.name + '</a></li>\n'
+		# a directory
+		else:
+			menu += '\t<li><a href="'
+			menu += n.dst_file
+			menu += '/index.' + template.obj_ext + '">'
+			menu += '/</a></li>\n'
+	menu += "</ul>"
+
+	return menu
 
 def path(file):
 	"""Builds the breadcrumb navigation path from the current file shown and
@@ -67,6 +102,7 @@ def path(file):
 
 	"""
 
+	"""
 	out = ""
 	file_path = file.split('/');
 	target_path = sys.argv[1].split('/');
@@ -90,64 +126,72 @@ def path(file):
 			if(i+1 == len(file_path)-1):
 				out += ' ' + file_path[i+1].split('.')[0].replace('_', ' ')
 	return out
+	"""
+	return "path"
 
-def page(file, dir):
-	"""Returns the complete html code of a single page."""
+def write_page(node):
+	"""Write a single page"""
 
-	h_src_file = codecs.open(file, "r", "utf-8");
-	src_content = h_src_file.read()
-	h_src_file.close()
-	out = template.header(file)
-	if(syntax(file) == "markdown" and "markdown" in template.src_ext):
-		out += markdown.markdown(src_content)
-	elif(syntax(file) == "textile" and "textile" in template.src_ext):
-		out += textile.textile(src_content)
-	out += template.footer(file)
-	out = out.replace("%%%PATH%%%", path(file))
-	out = out.replace("%%%MENU%%%", menu(file, dir))
-	return out
+	# open source file
+	h_src_pathname = codecs.open(node.src_pathname, "r", "utf-8");
+	src_content = h_src_pathname.read()
+	h_src_pathname.close()
+	# create html page
+	dst_content = template.header(node)
+	if(syntax(node.src_pathname) == "markdown"
+	and "markdown" in template.src_ext):
+		dst_content += markdown.markdown(src_content)
+	elif(syntax(node.src_pathname) == "textile"
+	and "textile" in template.src_ext):
+		dst_content += textile.textile(src_content)
+	dst_content += template.footer(node)
+	dst_content = dst_content.replace("%%%PATH%%%", path(node))
+	dst_content = dst_content.replace("%%%MENU%%%", menu(node))
+	# write html file
+	h_dst_pathname = codecs.open(node.dst_pathname, "w", "utf-8")
+	h_dst_pathname.write(dst_content)
+	h_dst_pathname.close()
 
-def process(dir, margin = ''):
-	"""Recursively calls page() on every file/dir in the given directory"""
+def build_tree(node):
+	"""Recursively create a tree representing the sources file hierarchy"""
 
-	for file in os.listdir(dir):
-		src_file = os.path.join(dir, file)
-		if(os.path.islink(src_file)):
+	for file in os.listdir(node.src_pathname):
+		pathname = os.path.join(node.src_pathname, file)
+		# do not add nodes for links and files starting with '.'
+		if(os.path.islink(pathname)
+		or file[0] == "."):
 			continue
-		elif(os.path.isfile(src_file) and syntax(src_file) and needs_update(dir)):
-			out_file = src_file.split('.')
-			out_file[-1] = template.obj_ext
-			out_file = string.join(out_file, ".")
-			if(len(sys.argv) == 3):
-				out_file = string.join(sys.argv[2].split('/') + out_file.split('/')[len(sys.argv[1].split('/')):], '/')
-				try:
-					os.makedirs(string.join(out_file.split('/')[:-1], '/'))
-				except OSError:
-					pass
-			print margin + src_file
-			h_out_file = codecs.open(out_file, "w", "utf-8")
-			h_out_file.write(page(src_file, dir))
-			h_out_file.close()
-		elif(os.path.isdir(src_file)):
-			process(src_file, margin + '  ')
+		# add nodes for files with an allowed extension
+		elif(os.path.isfile(pathname) and syntax(pathname)):
+			node.add_child(Node(pathname, node))
+		# add nodes for directories and go on building the tree
+		elif(os.path.isdir(pathname) and hasindex(pathname)):
+			node.add_child(Node(pathname, node))
+			# -1 used to specify the last added node
+			build_tree(node.children[-1])
 
-def syntax(file):
-	for lang in template.src_ext.keys():
-		if(template.src_ext[lang] == file.split('.')[-1]):
-				return lang
-	return ''
+def write_tree(node, margin = ''):
+	print "src_pathname : " + node.src_pathname
+	print "dst_pathname : " + node.dst_pathname
+	print "name     : " + node.name
+	print "dst_file     : " + os.path.basename(node.dst_pathname)
+	print
 
-def hasindex(dir):
-	for lang in template.src_ext.keys():
-		if(os.path.isfile(dir + "/index." + template.src_ext[lang])):
-			return True
-	return False
-
-def needs_update(dir):
-	if(template_last_change > minimalsite_last_run
-	or os.path.getmtime(dir) > minimalsite_last_run):
-		return True
-	return False
+	# a directory
+	if node.children:
+		# create the destination dir, if possible
+		#print margin + "creating -> " + node.dst_pathname
+		try:
+			os.makedirs(node.dst_pathname)
+		except OSError:
+			pass
+		# recursivly call write_tree against current node
+		for nodes in node.children:
+			write_tree(nodes, margin + '    ')
+	# a file
+	else:
+		#print margin + "writing  -> " + node.dst_pathname
+		write_page(node)
 
 def main():
 	global minimalsite_last_run
@@ -169,14 +213,16 @@ def main():
 		sys.exit(3)
 	else:
 		if(len(sys.argv) == 3):
-			sys.argv[2] = os.path.abspath(sys.argv[2])
-		sys.argv[1] = os.path.abspath(sys.argv[1])
+			template.dst_dir = os.path.abspath(sys.argv[2])
+		template.src_dir = os.path.abspath(sys.argv[1])
 		if(template.last_run):
-			template.last_run = os.path.join(sys.argv[1], template.last_run)
+			template.last_run = os.path.join(template.src_dir, template.last_run)
 			if(os.path.isfile(template.last_run)):
 				minimalsite_last_run = os.path.getmtime(template.last_run)
-		print "Processing files in " + sys.argv[1] + ":\n"
-		process(sys.argv[1])
+		print "Processing files in " + template.src_dir + ":\n"
+		root = Node(template.src_dir)
+		build_tree(root)
+		write_tree(root)
 		print "\n... Done!"
 		if(template.last_run):
 			lastrun_file = open(template.last_run, "w")
