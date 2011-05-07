@@ -43,18 +43,24 @@ class Node(object):
 # functions definition
 
 def syntax(pathname):
+	"""Returns the markup language used in the given pathname."""
+
 	for lang in template.src_ext.keys():
 		if(template.src_ext[lang] == pathname.split('.')[-1]):
 				return lang
 	return ''
 
 def hasindex(pathname):
+	"""Check if there's an index file in the given directory pathname."""
+
 	for lang in template.src_ext.keys():
 		if(os.path.isfile(pathname + "/index." + template.src_ext[lang])):
 			return True
 	return False
 
 def get_dst_pathname(src_pathname):
+	"""Get destionation pathname from source pathname."""
+
 	# replace extension
 	dst_pathname = src_pathname.split('.')
 	if len(dst_pathname) > 1:
@@ -66,12 +72,14 @@ def get_dst_pathname(src_pathname):
 	return re.sub('\/\d+_', '/', dst_pathname)
 
 def get_name(dst_pathname):
+	"""Get page name from destionation pathname."""
+
 	name = os.path.basename(dst_pathname)
 	name = os.path.splitext(name)[0]
 	return name.replace('_', ' ')
 
 def menu(node):
-	"""Given the current node, returns a multine string of the menu code."""
+	"""Given a node, returns a multine string of the menu code."""
 
 	menu = "<ul>\n"
 	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
@@ -97,8 +105,7 @@ def menu(node):
 	return menu
 
 def path(node):
-	"""Builds the breadcrumb navigation path from the current file shown and
-	returns it to a string"""
+	"""Given a node, returns a string of the breadcrumb navigation path code."""
 
 	# a bit dirty... there's space for improvements
 	path = ""
@@ -122,13 +129,13 @@ def path(node):
 	return path
 
 def write_page(node):
-	"""Write a single page"""
+	"""Given a node, write on the file system its corresponding page."""
 
 	# open source file
 	h_src_pathname = codecs.open(node.src_pathname, "r", "utf-8");
 	src_content = h_src_pathname.read()
 	h_src_pathname.close()
-	# create html page
+	# build page
 	dst_content = template.header(node)
 	if(syntax(node.src_pathname) == "markdown"
 	and "markdown" in template.src_ext):
@@ -139,13 +146,14 @@ def write_page(node):
 	dst_content += template.footer(node)
 	dst_content = dst_content.replace("%%%PATH%%%", path(node))
 	dst_content = dst_content.replace("%%%MENU%%%", menu(node))
-	# write html file
+	# write destionation file
 	h_dst_pathname = codecs.open(node.dst_pathname, "w", "utf-8")
 	h_dst_pathname.write(dst_content)
 	h_dst_pathname.close()
 
 def build_tree(node):
-	"""Recursively create a tree representing the sources file hierarchy"""
+	"""Given a node, recursively create a tree representing the sources file
+	hierarchy starting from that node."""
 
 	for file in os.listdir(node.src_pathname):
 		pathname = os.path.join(node.src_pathname, file)
@@ -163,6 +171,9 @@ def build_tree(node):
 			build_tree(node.children[-1])
 
 def write_tree(node, margin = ''):
+	"""Given a node, recursively write all the corresponding pages on the file
+	system."""
+
 	# a directory
 	if node.children:
 		# create the destination dir, if possible
