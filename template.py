@@ -11,8 +11,15 @@ site_name = "My Site"
 # your name
 author = "Author Name"
 
-src_dir = "/tmp/src"
-dst_dir = "/tmp/dst"
+# source dir containing the markup file hierarchy, like
+# "/home/marco/website/src". It is not mandatory to set this value here, you
+# can specify the value of this variable at runtime, see minimalsite.py -h
+src_dir = ""
+
+# destination dir for your site, usually under the webroot pathname, like
+# "/var/www/marco/htdocs". It is not mandatory to set this value here, you can
+# specify the value of this variable at runtime, see minimalsite.py -h
+dst_dir = ""
 
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user"
@@ -28,18 +35,14 @@ path_separator = "/"
 # set the extensions used for markdown and textile files
 src_ext = {"markdown": "md", "textile": "tt"}
 
-# set the extension used for object files. For example if you plan to embed php
-# code you can write "php" here
-obj_ext = "html"
+# set the extension used for destination files. For example if you plan to
+# embed php code you can write "php" here
+dst_ext = "html"
 
 # set the list of pages that should be parsed but you don't want to display n
 # the menu
-hidden = set(["404.md", "500.md", "503.md"])
+hidden = set(["404.md", "500.md", "404.tt", "500.tt"])
 
-# set the file name inside your source directory used to determine the last run
-# of minimalsite. Set this variable to "" if you want to generate the html
-# structure at every invocation of minimalsite
-last_run = ".minimalsite_lastrun"
 
 current_time = datetime.datetime.now()
 

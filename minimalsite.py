@@ -64,7 +64,7 @@ def get_dst_pathname(src_pathname):
 	# replace extension
 	dst_pathname = src_pathname.split('.')
 	if len(dst_pathname) > 1:
-		dst_pathname[-1] = str(template.obj_ext)
+		dst_pathname[-1] = str(template.dst_ext)
 	dst_pathname = string.join(dst_pathname, '.')
 	# change destination dir
 	dst_pathname = string.join(template.dst_dir.split('/') + dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
@@ -99,7 +99,7 @@ def menu(node):
 		else:
 			menu += '\t<li><a href="'
 			menu += n.dst_file
-			menu += '/index.' + template.obj_ext + '">'
+			menu += '/index.' + template.dst_ext + '">'
 			menu += n.name + '</a></li>\n'
 	menu += "</ul>"
 	return menu
@@ -123,7 +123,7 @@ def path(node):
 		if i == 0:
 			path += path_list[i]
 		else:
-			path += '<a href="' + "../" * (i+j) + "index." + template.obj_ext + '">'
+			path += '<a href="' + "../" * (i+j) + "index." + template.dst_ext + '">'
 			path += path_list[i]
 			path += '</a> ' + template.path_separator + ' '
 	return path
@@ -191,40 +191,30 @@ def write_tree(node, margin = ''):
 		write_page(node)
 
 def main():
-	global minimalsite_last_run
-
-	if(len(sys.argv) < 2 or len(sys.argv) > 3):
-		sys.stderr.write("Incorrect usage, see -h for help\n")
+	if len(sys.argv) > 3:
+		sys.stderr.write('Incorrect usage, see -h for help\n')
 		sys.exit(1)
-	elif(sys.argv[1] == "-h"):
-		print '''Usage: minimalsite.py <source dir> [output dir]'''
-		sys.exit(0)
-	elif(not os.path.isdir(sys.argv[1])):
-		sys.stderr.write(sys.argv[1] + " is not a directory, aborting\n")
+	if len(sys.argv) >= 2:
+		if sys.argv[1] == '-h':
+			print 'Usage: minimalsite.py [source_dir [destination_dir]]'
+			sys.exit(0)
+		template.src_dir = template.dst_dir = os.path.abspath(sys.argv[1])
+		if len(sys.argv) == 3:
+			template.dst_dir = os.path.abspath(sys.argv[2])
+	if not os.path.isdir(template.src_dir):
+		sys.stderr.write('"' + template.src_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
-	elif(len(sys.argv) == 3 and not os.path.isdir(sys.argv[2])):
-		sys.stderr.write(sys.argv[2] + " is not a directory, aborting\n")
+	if not os.path.isdir(template.dst_dir):
+		sys.stderr.write('"' + template.dst_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
-	elif(not template.src_ext):
+	if not template.src_ext:
 		sys.stderr.write("No modules for parsing files found. See README for requirements\n")
 		sys.exit(3)
-	else:
-		if(len(sys.argv) == 3):
-			template.dst_dir = os.path.abspath(sys.argv[2])
-		template.src_dir = os.path.abspath(sys.argv[1])
-		if(template.last_run):
-			template.last_run = os.path.join(template.src_dir, template.last_run)
-			if(os.path.isfile(template.last_run)):
-				minimalsite_last_run = os.path.getmtime(template.last_run)
-		print "Processing files in " + template.src_dir + ":\n"
-		root = Node(template.src_dir)
-		build_tree(root)
-		write_tree(root)
-		print "\n... Done!"
-		if(template.last_run):
-			lastrun_file = open(template.last_run, "w")
-			lastrun_file.write("")
-			lastrun_file.close()
+	print 'Processing files in "' + template.src_dir + '":\n'
+	root = Node(template.src_dir)
+	build_tree(root)
+	write_tree(root)
+	print '\n... Done!'
 
 if __name__ == "__main__":
     main()
