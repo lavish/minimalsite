@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        04/05/2011
+# Date:        07/05/2011
 # Version:     0.5
 # License:     MIT, see LICENSE for details
 

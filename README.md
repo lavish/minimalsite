@@ -30,11 +30,12 @@ There's no need to install the tool: download, unpack and run.
 
 Just type from command line:
 
-    ./minimalsite.py <source dir> [output dir]
+    ./minimalsite.py [source_dir [destination_dir]]
 
-where "source dir" is the directory containing the source file hierarchy and
-"output dir" the directory where you want to create web pages. If you omit to
-specify an "output dir", all files will be written inside "source dir".
+where source\_dir is the directory containing the source file hierarchy and
+destination\_dir the directory where you want to create web pages. If you omit
+to specify a destionation\_dir, all files will be written inside source\_dir.
+You can also specify these directories editing the template file.
 
 Please note that you need to place an index file in in each directory you want
 to parse.
@@ -45,10 +46,28 @@ to parse.
 You can edit "template.py" to fit your needs. See comments inside for help.
 
 
+### Extra Features
+
+#### Page ordering
+
+If you need to order menu entries, you can add a numerical index before the
+pathname, for example:
+
+	/home/marco/website/30_university.md
+	/home/marco/website/50_contacts.md
+
+will be written as:
+
+	/var/www/marco/htdocs/university.html
+	/var/www/marco/htdocs/contacts.html
+
+and "university" will be displayed before "contacts" in the menu. Both files and
+directories are supported.
+
+
 ### Misc
 
-Please refear to [Markdown Syntax][] and [Textile Syntax][] documentation
-before writing your pages.
+Please refear to [Markdown Syntax][] and [Textile Syntax][] documentation before writing your pages.
 
 
 ### Thanks to
