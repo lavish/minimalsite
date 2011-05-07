@@ -91,43 +91,34 @@ def menu(node):
 			menu += '\t<li><a href="'
 			menu += n.dst_file
 			menu += '/index.' + template.obj_ext + '">'
-			menu += '/</a></li>\n'
+			menu += n.name + '</a></li>\n'
 	menu += "</ul>"
 
 	return menu
 
-def path(file):
+def path(node):
 	"""Builds the breadcrumb navigation path from the current file shown and
-	returns it to a string
+	returns it to a string"""
 
-	"""
-
-	"""
-	out = ""
-	file_path = file.split('/');
-	target_path = sys.argv[1].split('/');
-	for i in range(len(target_path)-1, len(file_path)-1):
-		if(file_path[i+1].startswith("index.")):
-			if(i == len(target_path)-1):
-				out += template.home
-			else:
-				out += ' ' + file_path[i].split('.')[0].replace('_', ' ')
+	path = ""
+	path_list = []
+	j = 0
+	while node.parent:
+		path_list.append(node.name)
+		node = node.parent
+	path_list.append(template.home)
+	if path_list[0] == "index":
+		path_list.remove("index")
+	else:
+		j = -1
+	for i in range(len(path_list)-1, -1, -1):
+		if i == 0:
+			path += path_list[i]
 		else:
-			out += '<a href="'
-			for a in range(2, len(file_path)-i):
-				out += '../'
-			out += 'index.' + template.obj_ext + '">'
-			if(i == len(target_path)-1):
-				out += template.home
-			else:
-				out += file_path[i].replace('_', ' ')
-			out += '</a> '
-			out += template.path_separator + ' ' 
-			if(i+1 == len(file_path)-1):
-				out += ' ' + file_path[i+1].split('.')[0].replace('_', ' ')
-	return out
-	"""
-	return "path"
+			path += '<a href="' + "../" * (i+j) + "index." + template.obj_ext + '">'
+			path += path_list[i]
+			path += '</a> ' + template.path_separator + ' '
+	return path
 
 def write_page(node):
 	"""Write a single page"""
@@ -171,16 +162,10 @@ def build_tree(node):
 			build_tree(node.children[-1])
 
 def write_tree(node, margin = ''):
-	print "src_pathname : " + node.src_pathname
-	print "dst_pathname : " + node.dst_pathname
-	print "name     : " + node.name
-	print "dst_file     : " + os.path.basename(node.dst_pathname)
-	print
-
 	# a directory
 	if node.children:
 		# create the destination dir, if possible
-		#print margin + "creating -> " + node.dst_pathname
+		print margin + "creating -> " + node.dst_pathname
 		try:
 			os.makedirs(node.dst_pathname)
 		except OSError:
@@ -190,7 +175,7 @@ def write_tree(node, margin = ''):
 			write_tree(nodes, margin + '    ')
 	# a file
 	else:
-		#print margin + "writing  -> " + node.dst_pathname
+		print margin + "writing  -> " + node.dst_pathname
 		write_page(node)
 
 def main():
