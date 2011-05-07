@@ -75,14 +75,15 @@ def menu(node):
 
 	menu = "<ul>\n"
 	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
-		# and index page, no need to include it
+		# and index page or a hidden file, no need to include them
 		if(n.dst_file.startswith("index.")
-		or n.dst_file in template.hidden):
+		or n.src_file in template.hidden):
 			continue
 		# a page
 		elif not n.children:
 			menu += '\t<li><a href='
 			menu += '"' + n.dst_file + '"'
+			# current page
 			if(node == n):
 				menu += ' class="current"'
 			menu += '>' + n.name + '</a></li>\n'
@@ -93,13 +94,13 @@ def menu(node):
 			menu += '/index.' + template.obj_ext + '">'
 			menu += n.name + '</a></li>\n'
 	menu += "</ul>"
-
 	return menu
 
 def path(node):
 	"""Builds the breadcrumb navigation path from the current file shown and
 	returns it to a string"""
 
+	# a bit dirty... there's space for improvements
 	path = ""
 	path_list = []
 	j = 0
