@@ -197,10 +197,10 @@ def main():
 		sys.exit(1)
 	for o, a in opts:
 		if o in ("-v", "--version"):
-			print 'Version foo'
+			print 'minimalsite-0.5 by Marco Squarcina, see LICENSE for details'
 			sys.exit(0)
 		elif o in ("-h", "--help"):
-			print 'Usage: minimalsite.py [source_dir [destination_dir]]'
+			print 'Usage: minimalsite.py [-v|--version] [-t|--template template] [-s|--src_dir source_dir] [-d|--dst_dir destination_dir]'
 			sys.exit(0)
 		elif o in ("-t", "--template"):
 			template_module = 'templates.' + a
