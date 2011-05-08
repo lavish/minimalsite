@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        07/05/2011
-# Version:     0.5
 # License:     MIT, see LICENSE for details
 
 import os
@@ -62,10 +60,10 @@ def get_dst_pathname(src_pathname):
 	"""Get destionation pathname from source pathname."""
 
 	# replace extension
-	dst_pathname = src_pathname.split('.')
-	if len(dst_pathname) > 1:
-		dst_pathname[-1] = str(template.dst_ext)
-	dst_pathname = string.join(dst_pathname, '.')
+	dst_pathname = os.path.splitext(src_pathname)
+	if dst_pathname[1]:
+		dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
+	dst_pathname = ''.join(dst_pathname)
 	# change destination dir
 	dst_pathname = string.join(template.dst_dir.split('/') + dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
 	# remove index numbers for dirs and files
@@ -177,11 +175,12 @@ def write_tree(node, margin = ''):
 	# a directory
 	if node.children:
 		# create the destination dir, if possible
-		print margin + "creating -> " + node.dst_pathname
 		try:
 			os.makedirs(node.dst_pathname)
 		except OSError:
 			pass
+		else:
+			print margin + "creating -> " + node.dst_pathname
 		# recursivly call write_tree against current node
 		for nodes in node.children:
 			write_tree(nodes, margin + '    ')

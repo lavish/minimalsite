@@ -1,6 +1,4 @@
 # Author:      Marco Squarcina <lavish@gmail.com>
-# Date:        07/05/2011
-# Version:     0.5
 # License:     MIT, see LICENSE for details
 
 import datetime
