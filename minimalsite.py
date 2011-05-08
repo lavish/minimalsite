@@ -3,23 +3,17 @@
 # Author:      Marco Squarcina <lavish@gmail.com>
 # License:     MIT, see LICENSE for details
 
-import os
-import codecs
-import string
-import sys
-import template
-import re
+import getopt, os, sys
+import string, codecs, re
 
 try:
 	import markdown
 except ImportError:
 	sys.stderr.write("Module markdown not found.\n")
-	del template.src_ext["markdown"]
 try:
 	import textile
 except ImportError:
 	sys.stderr.write("Module textile not found.\n")
-	del template.src_ext["textile"]
 
 
 # class definition
@@ -190,25 +184,55 @@ def write_tree(node, margin = ''):
 		write_page(node)
 
 def main():
-	if len(sys.argv) > 3:
+	global template
+
+	# set default arguments
+	src_dir = dst_dir = None
+	template_module = 'templates.default'
+	# parse options
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "ht:s:d:v", ["help", "template=", "src_dir=", "dst_dir=", "version"])
+	except getopt.GetoptError, err:
 		sys.stderr.write('Incorrect usage, see -h for help\n')
 		sys.exit(1)
-	if len(sys.argv) >= 2:
-		if sys.argv[1] == '-h':
+	for o, a in opts:
+		if o in ("-v", "--version"):
+			print 'Version foo'
+			sys.exit(0)
+		elif o in ("-h", "--help"):
 			print 'Usage: minimalsite.py [source_dir [destination_dir]]'
 			sys.exit(0)
-		template.src_dir = template.dst_dir = os.path.abspath(sys.argv[1])
-		if len(sys.argv) == 3:
-			template.dst_dir = os.path.abspath(sys.argv[2])
+		elif o in ("-t", "--template"):
+			template_module = 'templates.' + a
+		elif o in ("-s", "--src_dir"):
+			src_dir = a
+		elif o in ("-d", "--dst_dir"):
+			dst_dir = a
+		else:
+			assert False, "unhandled option"
+	# load template
+	__import__(template_module)
+	template = sys.modules[template_module]
+	# check markup modules
+	if not sys.modules['markdown']:
+		del template.src_ext['markdown']
+	if not sys.modules['textile']:
+		del template.src_ext['textile']
+	if not template.src_ext:
+		sys.stderr.write("No modules for parsing files found. See README for requirements\n")
+		sys.exit(3)
+	# check src and dst directories
+	if src_dir:
+		template.src_dir = os.path.abspath(src_dir)
+	if dst_dir:
+		template.dst_dir = os.path.abspath(dst_dir)
 	if not os.path.isdir(template.src_dir):
 		sys.stderr.write('"' + template.src_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
 	if not os.path.isdir(template.dst_dir):
 		sys.stderr.write('"' + template.dst_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
-	if not template.src_ext:
-		sys.stderr.write("No modules for parsing files found. See README for requirements\n")
-		sys.exit(3)
+	# start writing the site
 	print 'Processing files in "' + template.src_dir + '":\n'
 	root = Node(template.src_dir)
 	build_tree(root)
