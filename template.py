@@ -20,7 +20,7 @@ src_dir = ""
 dst_dir = ""
 
 # the path under where your site will be shown. For example if you access to
-# your site via http://www.domain.com/user/, set prefix = "/user"
+# your site via http://www.domain.com/user/, set prefix = "/user/"
 prefix = "/"
 
 # the name used for referring to the home page. This variable sets the name for
@@ -53,12 +53,12 @@ def header(node):
 		<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 		<meta name="author" content="''' + author + '''" />
 		<title>''' + site_name + ' | ' + node.name + '''</title>
-		<link href="''' + prefix + '''/style.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="''' + prefix + '''style.css" rel="stylesheet" type="text/css" media="screen" />
 	</head>
 	<body>
 		<div id="container">
 			<div id="header">
-				<h1>''' + site_name + '''</h1>
+				<h1><a href="''' + prefix + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
 			</div>
 			<div id="path">
 				You are here: %%%PATH%%%
