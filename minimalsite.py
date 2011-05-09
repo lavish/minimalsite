@@ -59,7 +59,8 @@ def get_dst_pathname(src_pathname):
 		dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
 	dst_pathname = ''.join(dst_pathname)
 	# change destination dir
-	dst_pathname = string.join(template.dst_dir.split('/') + dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
+	dst_pathname = string.join(template.dst_dir.split('/')
+		+ dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
 	# remove index numbers for dirs and files
 	return re.sub('\/\d+_', '/', dst_pathname)
 
@@ -191,7 +192,9 @@ def main():
 	template_module = 'templates.default'
 	# parse options
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "ht:s:d:v", ["help", "template=", "src_dir=", "dst_dir=", "version"])
+		opts, args = getopt.getopt(sys.argv[1:], 
+			"ht:s:d:v", 
+			["help", "template=", "src_dir=", "dst_dir=", "version"])
 	except getopt.GetoptError, err:
 		sys.stderr.write('Incorrect usage, see -h for help\n')
 		sys.exit(1)
@@ -200,7 +203,14 @@ def main():
 			print 'minimalsite-0.5 by Marco Squarcina, see LICENSE for details'
 			sys.exit(0)
 		elif o in ("-h", "--help"):
-			print 'Usage: minimalsite.py [-v|--version] [-t|--template template] [-s|--src_dir source_dir] [-d|--dst_dir destination_dir]'
+			print '''Usage: minimalsite.py [options]
+
+Options:
+  -h, --help                     Show help options
+  -v, --version                  Display minimalsite version
+  -t, --template=TEMPLATE        Specify a template
+  -s, --src_dir=SOURCE_DIR       Specify source dir to use
+  -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use'''
 			sys.exit(0)
 		elif o in ("-t", "--template"):
 			template_module = 'templates.' + a

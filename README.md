@@ -4,11 +4,11 @@ MinimalSite
 minimalsite is a fast minimal static website builder. It generates web pages
 from a file hierarchy with markdown and textile syntax.
 
-                                                   _                
-                   o          o                   | |     o         
-         _  _  _       _  _       _  _  _    __,  | |  ,    _|_  _  
-        / |/ |/ |  |  / |/ |  |  / |/ |/ |  /  |  |/  / \_|  |  |/  
-          |  |  |_/|_/  |  |_/|_/  |  |  |_/\_/|_/|__/ \/ |_/|_/|__/
+                                               _                
+               o          o                   | |     o         
+     _  _  _       _  _       _  _  _    __,  | |  ,    _|_  _  
+    / |/ |/ |  |  / |/ |  |  / |/ |/ |  /  |  |/  / \_|  |  |/  
+      |  |  |_/|_/  |  |_/|_/  |  |  |_/\_/|_/|__/ \/ |_/|_/|__/
 
 
 
@@ -28,30 +28,38 @@ There's no need to install the tool: download, unpack and run.
 
 ### Running minimalsite
 
-Just type from command line:
+    Usage: minimalsite.py [options]
 
-    ./minimalsite.py [source_dir [destination_dir]]
+    Options:
+      -h, --help                     Show help options
+      -v, --version                  Display minimalsite version
+      -t, --template=TEMPLATE        Specify a template
+      -s, --src_dir=SOURCE_DIR       Specify source dir to use
+      -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use
 
-where source\_dir is the directory containing the source file hierarchy and
-destination\_dir the directory where you want to create web pages. If you omit
-to specify a destionation\_dir, all files will be written inside source\_dir.
-You can also specify these directories editing the template file.
+`SOURCE_DIR` is the directory containing the source file hierarchy and
+`DESTINATION_DIR` the directory where you want to create web pages.
+
+You can also add different templates under the `templates/` directory and
+specify `TEMPLATE` using your template file name. For example, to use
+`templates/minimalblue.py`, you will run `./minimalsite -t minimalblue ...`
 
 Please note that you need to place an index file in in each directory you want
-to parse.
+to parse, otherwise those directories will be ignored.
 
 
 ### Configuration
 
-You can edit "template.py" to fit your needs. See comments inside for help.
+You can create you own template starting from `templates/default.py`. See
+comments inside for help.
 
 
 ### Extra Features
 
 #### Page ordering
 
-If you need to order menu entries, you can add a numerical index before the
-pathname, for example:
+If you need to order menu entries, add a numerical index before the pathname,
+for example:
 
 	/home/marco/website/30_university.md
 	/home/marco/website/50_contacts.md
