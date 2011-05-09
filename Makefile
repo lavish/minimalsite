@@ -15,10 +15,10 @@ clean:
 dist: clean
 	@echo creating dist tarball
 	mkdir -p ${PROJECT}-${VERSION}
-	@cp -R README.md LICENSE Makefile ${SRC} ${PROJECT}-${VERSION}
+	@cp -R README.md LICENSE Makefile templates ${PROJECT}.py ${PROJECT}-${VERSION}
 	@tar --exclude=".*" -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	rm -rf ${PROJECT}-${VERSION}
-	md5sum -b  ${PROJECT}-${VERSION}.tar.gz
+	md5sum -b ${PROJECT}-${VERSION}.tar.gz
 
 .PHONY: clean
