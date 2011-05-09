@@ -78,18 +78,29 @@ directories are supported.
 Please refear to [Markdown Syntax][] and [Textile Syntax][] documentation before writing your pages.
 
 
-### Thanks to
+### Author/Credits
 
-* [Anselm R Garbe][], providing the idea behind this tool ([genosite][])
+Minimalsite is written by [Marco Squarcina][] <lavish@gmail.com>
+
+The following people have contributed to this project:
+
+* [Anselm R Garbe][], provided the idea behind this tool ([genosite][])
 * [Luca Postregna][], testing and lots of useful suggestions
 * Josie Panzuto, linguistic revision
 * [Emanuele Giaquinta][], some tips
+
+
+### Website
+
+* http://www.minimalblue.com/projects/minimalsite.html
+* https://github.com/lavish/minimalsite
 
 
 [Python Markdown]:    http://www.freewisdom.org/projects/python-markdown
 [PyTextile]:          http://loopcore.com/python-textile/
 [Markdown Syntax]:    http://daringfireball.net/projects/markdown/syntax
 [Textile Syntax]:     http://en.wikipedia.org/wiki/Textile_(markup_language)
+[Marco Squarcina]:    http://www.minimalblue.com/
 [Anselm R Garbe]:     http://garbe.us/
 [genosite]:           http://hg.suckless.org/genosite/
 [Luca Postregna]:     http://luca.postregna.name/
