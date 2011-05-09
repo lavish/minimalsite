@@ -1,7 +1,5 @@
 /*
  * Author:      Marco Squarcina <lavish@gmail.com>
- * Date:        21/10/2010
- * Version:     0.4
  * License:     MIT, see LICENSE for details
  */
 
@@ -44,6 +42,13 @@ a {
 	color: #666666;
 	text-align: center;
 }
+	#header h1 {
+		margin: 0 10%;
+		padding: 0 0 0 10px;
+		text-align: left;
+		text-transform: uppercase;
+		text-shadow: 1px 1px 0px #ffffff;
+	}
 #path {
 	padding: 5px 10px;
 	margin: 10px 10%;
@@ -155,4 +160,5 @@ a {
 	color: #666666;
 	font-size: 0.9em;
 	text-align: right;
+	text-shadow: 1px 1px 0px #ffffff;
 }
