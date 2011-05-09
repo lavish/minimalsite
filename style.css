@@ -11,15 +11,15 @@ html {
 body {
 	padding: 0;
 	margin: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 0.9em;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
 	background-color: #d9e5ec;
 	color: #4b4f61;
 }
 img { 
 	border: 0; 
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 a {
 	color: #0066ff;
@@ -34,7 +34,7 @@ a {
 	color: inherit;
 }
 #header {
-    border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
 	padding: 1em 0;
 	margin: 0;
 	width: 100%;
@@ -54,7 +54,7 @@ a {
 	margin: 10px 10%;
 	font-size: 0.9em;
 	color: #666666;
-    text-align: left;
+	text-align: left;
 }
 #path a,
 #path a:visited {
@@ -66,16 +66,16 @@ a {
 	text-decoration: underline;
 }
 #main {
-    padding: 0 0 10px 0;
-    margin: 0 10%;
+	padding: 0 0 10px 0;
+	margin: 0 10%;
 }
 #menu {
 	float: left;
 	width: 18%;
 	text-align: left;
 	color: inherit;
-    border-right: 1px dotted #cccccc;
-    padding-top: 0;
+	border-right: 1px dotted #cccccc;
+	padding-top: 0;
 }
 #menu ul {
 	margin: 0;
@@ -130,7 +130,7 @@ a {
 #content h2 {
 	color: #666666;
 	font-weight: normal;
-    text-transform: uppercase;
+	text-transform: uppercase;
 }
 #content h3 {
 	border-bottom: 1px #cccccc dotted;
