@@ -15,7 +15,7 @@ clean:
 dist: clean
 	@echo creating dist tarball
 	mkdir -p ${PROJECT}-${VERSION}
-	@cp -R README.md LICENSE Makefile templates ${PROJECT}.py ${PROJECT}-${VERSION}
+	@cp -R README.md LICENSE Makefile templates ${PROJECT}.py style.css ${PROJECT}-${VERSION}
 	@tar --exclude=".*" -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	rm -rf ${PROJECT}-${VERSION}
