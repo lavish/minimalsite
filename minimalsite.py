@@ -224,10 +224,9 @@ Options:
 	__import__(template_module)
 	template = sys.modules[template_module]
 	# check markup modules
-	if not sys.modules['markdown']:
-		del template.src_ext['markdown']
-	if not sys.modules['textile']:
-		del template.src_ext['textile']
+	for markup in ('markdown', 'textile'):
+		if not markup in sys.modules:
+			del template.src_ext[markup]
 	if not template.src_ext:
 		sys.stderr.write("No modules for parsing files found. See README for requirements\n")
 		sys.exit(3)
