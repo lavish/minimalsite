@@ -19,12 +19,13 @@ except ImportError:
 # class definition
 
 class Node(object):
-	def __init__(self, src_pathname, parent = None):
+	def __init__(self, src_pathname, level, parent = None):
 		self.src_pathname = src_pathname
 		self.dst_pathname = get_dst_pathname(src_pathname)
 		self.src_file = os.path.basename(self.src_pathname)
 		self.dst_file = os.path.basename(self.dst_pathname)
 		self.name = get_name(self.dst_pathname)
+		self.level = level
 		self.parent = parent
 		self.children = []
 
@@ -38,7 +39,7 @@ def syntax(pathname):
 	"""Returns the markup language used in the given pathname."""
 
 	for lang in template.src_ext.keys():
-		if(template.src_ext[lang] == pathname.split('.')[-1]):
+		if template.src_ext[lang] == pathname.split('.')[-1]:
 				return lang
 	return ''
 
@@ -46,7 +47,7 @@ def hasindex(pathname):
 	"""Check if there's an index file in the given directory pathname."""
 
 	for lang in template.src_ext.keys():
-		if(os.path.isfile(pathname + "/index." + template.src_ext[lang])):
+		if os.path.isfile(pathname + "/index." + template.src_ext[lang]):
 			return True
 	return False
 
@@ -77,15 +78,14 @@ def menu(node):
 	menu = "<ul>\n"
 	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
 		# and index page or a hidden file, no need to include them
-		if(n.dst_file.startswith("index.")
-		or n.src_file in template.hidden):
+		if n.dst_file.startswith("index.") or n.src_file in template.hidden:
 			continue
 		# a page
 		elif not n.children:
 			menu += '\t<li><a href='
 			menu += '"' + n.dst_file + '"'
 			# current page
-			if(node == n):
+			if node == n:
 				menu += ' class="current"'
 			menu += '>' + n.name + '</a></li>\n'
 		# a directory
@@ -99,25 +99,26 @@ def menu(node):
 
 def path(node):
 	"""Given a node, returns a string of the breadcrumb navigation path code."""
-
-	# a bit dirty... there's space for improvements
+	
 	path = ""
-	path_list = []
-	j = 0
-	while node.parent:
-		path_list.append(node.name)
-		node = node.parent
-	path_list.append(template.home)
-	if path_list[0] == "index":
-		path_list.remove("index")
-	else:
-		j = -1
-	for i in range(len(path_list)-1, -1, -1):
-		if i == 0:
-			path += path_list[i]
+	path_node = []
+	tmp_node = node
+	while tmp_node:
+		path_node.insert(0, tmp_node)
+		tmp_node = tmp_node.parent
+	# no need to display "index" in the path
+	if path_node[-1].name == "index":
+		path_node.pop()
+	for i in range(0, len(path_node)):
+		# last item, it could be current page or current dir
+		if i == len(path_node) - 1:
+			path += path_node[i].name
+		# a parent page
 		else:
-			path += '<a href="' + "../" * (i+j) + "index." + template.dst_ext + '">'
-			path += path_list[i]
+			path += '<a href="'
+			path += "../" * (node.level - path_node[i].level)
+			path += "index." + template.dst_ext + '">'
+			path += path_node[i].name 
 			path += '</a> ' + template.path_separator + ' '
 	return path
 
@@ -151,15 +152,14 @@ def build_tree(node):
 	for file in os.listdir(node.src_pathname):
 		pathname = os.path.join(node.src_pathname, file)
 		# do not add nodes for links and files starting with '.'
-		if(os.path.islink(pathname)
-		or file[0] == "."):
+		if os.path.islink(pathname) or file[0] == ".":
 			continue
 		# add nodes for files with an allowed extension
-		elif(os.path.isfile(pathname) and syntax(pathname)):
-			node.add_child(Node(pathname, node))
+		elif os.path.isfile(pathname) and syntax(pathname):
+			node.add_child(Node(pathname, node.level, node))
 		# add nodes for directories and go on building the tree
-		elif(os.path.isdir(pathname) and hasindex(pathname)):
-			node.add_child(Node(pathname, node))
+		elif os.path.isdir(pathname) and hasindex(pathname):
+			node.add_child(Node(pathname, node.level + 1, node))
 			# -1 used to specify the last added node
 			build_tree(node.children[-1])
 
@@ -241,9 +241,14 @@ Options:
 	if not os.path.isdir(template.dst_dir):
 		sys.stderr.write('"' + template.dst_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
-	# start writing the site
+	# check if src dir includes an index file
+	if not hasindex(template.src_dir):
+		sys.stderr.write('"' + template.src_dir + '" does not include a valid index file, aborting\n')
+		sys.exit(2)
+	# start writing pages
 	print 'Processing files in "' + template.src_dir + '":\n'
-	root = Node(template.src_dir)
+	root = Node(template.src_dir, 0)
+	root.name = template.home
 	build_tree(root)
 	write_tree(root)
 	print '\n... Done!'
