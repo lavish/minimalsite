@@ -75,27 +75,27 @@ def get_name(dst_pathname):
 def menu(node):
 	"""Given a node, returns a multine string of the menu code."""
 
-	menu = "<ul>\n"
+	menu_code = "<ul>\n"
 	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
 		# and index page or a hidden file, no need to include them
 		if n.dst_file.startswith("index.") or n.src_file in template.hidden:
 			continue
 		# a page
 		elif not n.children:
-			menu += '\t<li><a href='
-			menu += '"' + n.dst_file + '"'
+			menu_code += '\t<li><a href='
+			menu_code += '"' + n.dst_file + '"'
 			# current page
 			if node == n:
-				menu += ' class="current"'
-			menu += '>' + n.name + '</a></li>\n'
+				menu_code += ' class="current"'
+			menu_code += '>' + n.name + '</a></li>\n'
 		# a directory
 		else:
-			menu += '\t<li><a href="'
-			menu += n.dst_file
-			menu += '/index.' + template.dst_ext + '">'
-			menu += n.name + '</a></li>\n'
-	menu += "</ul>"
-	return menu
+			menu_code += '\t<li><a href="'
+			menu_code += n.dst_file
+			menu_code += '/index.' + template.dst_ext + '">'
+			menu_code += n.name + '</a></li>\n'
+	menu_code += "</ul>"
+	return menu_code
 
 def path(node):
 	"""Given a node, returns a string of the breadcrumb navigation path code."""
@@ -200,7 +200,7 @@ def main():
 		sys.exit(1)
 	for o, a in opts:
 		if o in ("-v", "--version"):
-			print 'minimalsite-0.6 by Marco Squarcina, see LICENSE for details'
+			print 'minimalsite-0.7 by Marco Squarcina, see LICENSE for details'
 			sys.exit(0)
 		elif o in ("-h", "--help"):
 			print '''Usage: minimalsite.py [options]
