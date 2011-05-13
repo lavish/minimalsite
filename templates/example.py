@@ -53,11 +53,11 @@ def menu(node):
 	while root.parent:
 		root = root.parent
 	menu_code = '\n<ul>\n'
-	menu_(root)
+	menu_(root, node)
 	menu_code += '</ul>\n'
 
 
-def menu_(node, node_prefix = prefix, indent = '\t'):
+def menu_(node, cur_node, node_prefix = prefix, indent = '\t'):
 	global menu_code
 
 	if node.children:
@@ -66,19 +66,25 @@ def menu_(node, node_prefix = prefix, indent = '\t'):
 				continue
 			if n.children:
 				menu_code += indent + '<li class="level-' + str(n.level) + '">'
-				menu_code += '<a href="' + node_prefix + n.dst_file
+				menu_code += '<a '
+				if n == cur_node:
+					menu_code += 'class="current" '
+				menu_code += 'href="' + node_prefix + n.dst_file
 				menu_code += "/index." + dst_ext + '">'
 				menu_code += n.name
 				menu_code += '</a>\n'
 				menu_code += indent + '\t<ul>\n'
-				menu_(n, node_prefix + n.dst_file + '/', indent + '\t')
+				menu_(n, cur_node, node_prefix + n.dst_file + '/', indent + '\t')
 				menu_code += indent + '\t</ul>\n'
 				menu_code += indent + '</li>\n'
 			else:
-				menu_(n, node_prefix, indent + '\t')
+				menu_(n, cur_node, node_prefix, indent + '\t')
 	else:
 		menu_code += indent + '<li class="level-' + str(node.level) + '">'
-		menu_code += '<a href="' + node_prefix + node.dst_file + '">'
+		menu_code += '<a '
+		if node == cur_node:
+			menu_code += 'class="current" '
+		menu_code += 'href="' + node_prefix + node.dst_file + '">'
 		menu_code += node.name
 		menu_code += '</a></li>\n'
 
