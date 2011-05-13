@@ -65,7 +65,7 @@ def menu_(node, cur_node, node_prefix = prefix, indent = '\t'):
 			if n.dst_file.startswith("index.") or n.src_file in hidden:
 				continue
 			if n.children:
-				menu_code += indent + '<li class="level-' + str(n.level) + '">'
+				menu_code += indent + '<li class="level-' + str(n.level - 1) + '">'
 				menu_code += '<a '
 				if n == cur_node:
 					menu_code += 'class="current" '
