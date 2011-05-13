@@ -51,7 +51,9 @@ to parse, otherwise those directories will be ignored.
 ### Configuration
 
 You can create you own template starting from `templates/default.py`. See
-comments inside for help.
+comments inside for help. Templates provide a very flexible tool for building
+your site adding how many functions and features you want; See
+`templates/example.py` for a more advanced template.
 
 
 ### Extra Features

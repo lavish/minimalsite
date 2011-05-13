@@ -3,8 +3,8 @@
 
 PROJECT	= minimalsite
 VERSION	= 0.7
-OBJ	= ${PROJECT}.pyc templates/__init__.pyc templates/default.pyc
-SRC	= ${PROJECT}.py  templates/__init__.py  templates/default.py  style.css
+OBJ	= ${PROJECT}.pyc templates/__init__.pyc templates/default.pyc templates/example.pyc 
+SRC	= ${PROJECT}.py  templates/__init__.py  templates/default.py  templates/example.py style.css
 
 ${PROJECT}:
 
