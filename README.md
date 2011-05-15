@@ -32,7 +32,8 @@ There's no need to install the tool: download, unpack and run.
 
     Options:
       -h, --help                     Show help options
-      -v, --version                  Display minimalsite version
+      -V, --version                  Display minimalsite version
+      -v, --verbose                  Display the entire tree structure
       -t, --template=TEMPLATE        Specify a template
       -s, --src_dir=SOURCE_DIR       Specify source dir to use
       -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use

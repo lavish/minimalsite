@@ -53,12 +53,12 @@ def header(node):
 		<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 		<meta name="author" content="''' + author + '''" />
 		<title>''' + site_name + ' | ' + node.name + '''</title>
-		<link href="''' + '../' * node.level + '''style.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="''' + '../' * (node.level-1) + '''style.css" rel="stylesheet" type="text/css" media="screen" />
 	</head>
 	<body>
 		<div id="container">
 			<div id="header">
-				<h1><a href="''' + '../' * node.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
+				<h1><a href="''' + '../' * (node.level-1) + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
 			</div>
 			<div id="path">
 				You are here: %%%PATH%%%

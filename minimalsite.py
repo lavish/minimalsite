@@ -29,6 +29,15 @@ class Node(object):
 		self.parent = parent
 		self.children = []
 
+	def __str__(self):
+		s  = '<%s:%s, ' % ('src_pathname', self.src_pathname)
+		s += '%s:%s, '  % ('dst_pathname', self.dst_pathname)
+		s += '%s:%s, '  % ('src_file', self.src_file)
+		s += '%s:%s, '  % ('dst_file', self.dst_file)
+		s += '%s:%s, '  % ('name', self.name)
+		s += '%s:%d>\n' % ('level', self.level)
+		return s
+
 	def add_child(self, obj):
 		self.children.append(obj)
 
@@ -116,7 +125,7 @@ def path(node):
 		# a parent page
 		else:
 			path += '<a href="'
-			path += "../" * (node.level - path_node[i].level)
+			path += "../" * (node.level - path_node[i].level - 1)
 			path += "index." + template.dst_ext + '">'
 			path += path_node[i].name 
 			path += '</a> ' + template.path_separator + ' '
@@ -145,6 +154,13 @@ def write_page(node):
 	h_dst_pathname.write(dst_content)
 	h_dst_pathname.close()
 
+def print_tree(node, margin = ''):
+	"""Given a node, display the entire tree structure from that node."""
+	if node:
+		sys.stderr.write(margin + str(node)) 
+		for nodes in node.children:
+			print_tree(nodes, margin + '    ')
+
 def build_tree(node):
 	"""Given a node, recursively create a tree representing the sources file
 	hierarchy starting from that node."""
@@ -156,7 +172,7 @@ def build_tree(node):
 			continue
 		# add nodes for files with an allowed extension
 		elif os.path.isfile(pathname) and syntax(pathname):
-			node.add_child(Node(pathname, node.level, node))
+			node.add_child(Node(pathname, node.level + 1, node))
 		# add nodes for directories and go on building the tree
 		elif os.path.isdir(pathname) and hasindex(pathname):
 			node.add_child(Node(pathname, node.level + 1, node))
@@ -190,16 +206,17 @@ def main():
 	# set default arguments
 	src_dir = dst_dir = None
 	template_module = 'templates.default'
+	verbose = False
 	# parse options
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 
-			"ht:s:d:v", 
-			["help", "template=", "src_dir=", "dst_dir=", "version"])
+			"ht:s:d:Vv", 
+			["help", "template=", "src_dir=", "dst_dir=", "version", "verbose"])
 	except getopt.GetoptError, err:
 		sys.stderr.write('Incorrect usage, see -h for help\n')
 		sys.exit(1)
 	for o, a in opts:
-		if o in ("-v", "--version"):
+		if o in ("-V", "--version"):
 			print 'minimalsite-0.7 by Marco Squarcina, see LICENSE for details'
 			sys.exit(0)
 		elif o in ("-h", "--help"):
@@ -207,7 +224,8 @@ def main():
 
 Options:
   -h, --help                     Show help options
-  -v, --version                  Display minimalsite version
+  -V, --version                  Display minimalsite version
+  -v, --verbose                  Display the entire tree structure
   -t, --template=TEMPLATE        Specify a template
   -s, --src_dir=SOURCE_DIR       Specify source dir to use
   -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use'''
@@ -218,6 +236,8 @@ Options:
 			src_dir = a
 		elif o in ("-d", "--dst_dir"):
 			dst_dir = a
+		elif o in ("-v", "--verbose"):
+			verbose = True
 		else:
 			assert False, "unhandled option"
 	# load template
@@ -252,6 +272,9 @@ Options:
 	build_tree(root)
 	write_tree(root)
 	print '\n... Done!'
+	if verbose:
+		sys.stderr.write("\nSite structure:\n\n")
+		print_tree(root)
 
 if __name__ == "__main__":
     main()

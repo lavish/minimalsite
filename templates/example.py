@@ -49,57 +49,81 @@ menu_code = ''
 def menu(node):
 	global menu_code
 
+	menu_code = '\n'
 	root = node
 	while root.parent:
 		root = root.parent
-	menu_code = '\n<ul>\n'
 	menu_(root, node)
-	menu_code += '</ul>\n'
+	return menu_code
 
-
-def menu_(node, cur_node, node_prefix = prefix, indent = '\t'):
+def menu_(node, cur_node, node_prefix = prefix, indent = ''):
 	global menu_code
 
-	if node.children:
-		for n in sorted(node.children, key=lambda n: n.src_pathname):
-			if n.dst_file.startswith("index.") or n.src_file in hidden:
-				continue
-			if n.children:
-				menu_code += indent + '<li class="level-' + str(n.level - 1) + '">'
-				menu_code += '<a '
-				if n == cur_node:
-					menu_code += 'class="current" '
-				menu_code += 'href="' + node_prefix + n.dst_file
-				menu_code += "/index." + dst_ext + '">'
-				menu_code += n.name
-				menu_code += '</a>\n'
-				menu_code += indent + '\t<ul>\n'
-				menu_(n, cur_node, node_prefix + n.dst_file + '/', indent + '\t')
-				menu_code += indent + '\t</ul>\n'
-				menu_code += indent + '</li>\n'
-			else:
-				menu_(n, cur_node, node_prefix, indent + '\t')
-	else:
-		menu_code += indent + '<li class="level-' + str(node.level) + '">'
-		menu_code += '<a '
-		if node == cur_node:
+	menu_code += indent + '<ul>\n'
+	for child in sorted(node.children, key=lambda n: n.src_pathname):
+		if child.dst_file.startswith("index."):
+			continue
+		menu_code += indent + '<li class="level-' + str(child.level) + '"><a '
+		if(child == cur_node
+		or (cur_node.dst_file.startswith("index.") and child == cur_node.parent)):
 			menu_code += 'class="current" '
-		menu_code += 'href="' + node_prefix + node.dst_file + '">'
-		menu_code += node.name
-		menu_code += '</a></li>\n'
+		menu_code += 'href="' + node_prefix + child.dst_file
+		if child.children:
+			menu_code += "/index." + dst_ext + '">'	+ child.name + '</a>\n'
+			menu_(child, cur_node, node_prefix + child.dst_file + '/', indent + '\t')
+			menu_code += indent + '</li>\n'
+		else:
+			menu_code += '">'   + child.name + '</a></li>\n'
+	menu_code += indent + '</ul>\n'
 
 def header(node):
 	"""Builds the header and returns it to a string."""
 	
-	menu(node)
 	return '''<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="author" content="''' + author + '''" />
 		<title>''' + site_name + ' | ' + node.name + '''</title>
-		<link rel="stylesheet" href="''' + '../' * node.level + '''style.css" />
 		<link rel="shortcut icon" href="/favicon.ico" />
+		<style type="text/css">
+			nav {
+				float: left;
+				width: 25%;
+			}
+			nav ul,
+			nav li {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			nav li {
+				padding-left: 2em;
+			}
+			nav li.level-1 {
+				padding: 0;
+			}
+			nav li a {
+				text-decoration: none;
+			}
+			nav li a.current {
+				text-decoration: underline;
+				font-weight: bold;
+			}
+			#content {
+				float: right;
+				width: 74%;
+				text-align: justify;
+			}
+			#edit {
+				clear: both;
+				text-align: right;
+				font-size: small;
+			}
+			footer {
+				clear: both;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="container">
@@ -111,7 +135,7 @@ def header(node):
 			</div>
 			<div id="main">
 				<nav>
-					''' + menu_code + '''
+					''' + menu(node) + '''
 				</nav>
 				<div id="content">
 '''
@@ -123,9 +147,6 @@ def footer(node):
 				</div>
 				<div id="edit">
 					Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.src_pathname))) + '''
-				</div>
-				<div id="clearer">
-					&nbsp;
 				</div>
 			</div>
 			<footer>
