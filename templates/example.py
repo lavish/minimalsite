@@ -61,7 +61,7 @@ def menu_(node, cur_node, node_prefix = prefix, indent = ''):
 
 	menu_code += indent + '<ul>\n'
 	for child in sorted(node.children, key=lambda n: n.src_pathname):
-		if child.dst_file.startswith("index."):
+		if child.dst_file.startswith("index.") or child.src_file in hidden:
 			continue
 		menu_code += indent + '<li class="level-' + str(child.level) + '"><a '
 		if(child == cur_node

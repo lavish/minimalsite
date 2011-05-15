@@ -85,24 +85,24 @@ def menu(node):
 	"""Given a node, returns a multine string of the menu code."""
 
 	menu_code = "<ul>\n"
-	for n in sorted(node.parent.children, key=lambda n: n.src_pathname):
+	for sibling in sorted(node.parent.children, key=lambda sibling: sibling.src_pathname):
 		# and index page or a hidden file, no need to include them
-		if n.dst_file.startswith("index.") or n.src_file in template.hidden:
+		if sibling.dst_file.startswith("index.") or sibling.src_file in template.hidden:
 			continue
 		# a page
-		elif not n.children:
+		elif not sibling.children:
 			menu_code += '\t<li><a href='
-			menu_code += '"' + n.dst_file + '"'
+			menu_code += '"' + sibling.dst_file + '"'
 			# current page
-			if node == n:
+			if node == sibling:
 				menu_code += ' class="current"'
-			menu_code += '>' + n.name + '</a></li>\n'
+			menu_code += '>' + sibling.name + '</a></li>\n'
 		# a directory
 		else:
 			menu_code += '\t<li><a href="'
-			menu_code += n.dst_file
+			menu_code += sibling.dst_file
 			menu_code += '/index.' + template.dst_ext + '">'
-			menu_code += n.name + '</a></li>\n'
+			menu_code += sibling.name + '</a></li>\n'
 	menu_code += "</ul>"
 	return menu_code
 
@@ -156,10 +156,11 @@ def write_page(node):
 
 def print_tree(node, margin = ''):
 	"""Given a node, display the entire tree structure from that node."""
+
 	if node:
 		sys.stderr.write(margin + str(node)) 
-		for nodes in node.children:
-			print_tree(nodes, margin + '    ')
+		for child in node.children:
+			print_tree(child, margin + '    ')
 
 def build_tree(node):
 	"""Given a node, recursively create a tree representing the sources file
@@ -193,8 +194,8 @@ def write_tree(node, margin = ''):
 		else:
 			print margin + "creating -> " + node.dst_pathname
 		# recursivly call write_tree against current node
-		for nodes in node.children:
-			write_tree(nodes, margin + '    ')
+		for child in node.children:
+			write_tree(child, margin + '    ')
 	# a file
 	else:
 		print margin + "writing  -> " + node.dst_pathname
