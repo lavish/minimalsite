@@ -87,32 +87,12 @@ def header(node):
 		<title>''' + site_name + ' | ' + node.name + '''</title>
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<style type="text/css">
-			nav {
-				float: left;
-				width: 25%;
-			}
-			nav ul,
-			nav li {
-				margin: 0;
-				padding: 0;
-				list-style: none;
-			}
-			nav li {
-				padding-left: 2em;
-			}
-			nav li.level-1 {
-				padding: 0;
-			}
-			nav li a {
-				text-decoration: none;
-			}
-			nav li a.current {
-				text-decoration: underline;
-				font-weight: bold;
+			#container {
+				width: 80%;
+				margin: 30px auto;
 			}
 			#content {
-				float: right;
-				width: 74%;
+				margin-left: 170px;
 				text-align: justify;
 			}
 			#edit {
@@ -123,6 +103,46 @@ def header(node):
 			footer {
 				clear: both;
 			}
+			nav {
+				float: left;
+				width: 160px;
+			}
+			nav li a.current {
+				background-color: blue;
+				color: #ffffff;
+				font-weight: bold;
+			}
+			nav ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				width: 150px; /* Width of Menu Items */
+				border-bottom: 1px solid #ccc;
+			}
+			nav ul li {
+				position: relative;
+			}
+			nav li ul {
+				position: absolute;
+				left: 149px; /* Set 1px less than menu width */
+				top: 0;
+				display: none;
+			}
+			/* Styles for Menu Items */
+			nav ul li a {
+				display: block;
+				text-decoration: none;
+				color: #777;
+				background: #fff; /* IE6 Bug */
+				padding: 5px;
+				border: 1px solid #ccc; /* IE6 Bug */
+				border-bottom: 0;
+			}
+			/* Holly Hack. IE Requirement \*/
+			* html ul li { float: left; height: 1%; }
+			* html ul li a { height: 1%; }
+			/* End */
+			nav li:hover ul, li.over ul { display: block; } /* The magic */
 		</style>
 	</head>
 	<body>
