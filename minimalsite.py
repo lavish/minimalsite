@@ -47,7 +47,7 @@ class Node(object):
 def syntax(pathname):
 	"""Returns the markup language used in the given pathname."""
 
-	for lang in template.src_ext.keys():
+	for lang in list(template.src_ext.keys()):
 		if template.src_ext[lang] == pathname.split('.')[-1]:
 				return lang
 	return ''
@@ -55,7 +55,7 @@ def syntax(pathname):
 def hasindex(pathname):
 	"""Check if there's an index file in the given directory pathname."""
 
-	for lang in template.src_ext.keys():
+	for lang in list(template.src_ext.keys()):
 		if os.path.isfile(pathname + "/index." + template.src_ext[lang]):
 			return True
 	return False
@@ -192,13 +192,13 @@ def write_tree(node, margin = ''):
 		except OSError:
 			pass
 		else:
-			print margin + "creating -> " + node.dst_pathname
+			print(margin + "creating -> " + node.dst_pathname)
 		# recursivly call write_tree against current node
 		for child in node.children:
 			write_tree(child, margin + '    ')
 	# a file
 	else:
-		print margin + "writing  -> " + node.dst_pathname
+		print(margin + "writing  -> " + node.dst_pathname)
 		write_page(node)
 
 def main():
@@ -213,15 +213,15 @@ def main():
 		opts, args = getopt.getopt(sys.argv[1:], 
 			"ht:s:d:Vv", 
 			["help", "template=", "src_dir=", "dst_dir=", "version", "verbose"])
-	except getopt.GetoptError, err:
+	except getopt.GetoptError as err:
 		sys.stderr.write('Incorrect usage, see -h for help\n')
 		sys.exit(1)
 	for o, a in opts:
 		if o in ("-V", "--version"):
-			print 'minimalsite-0.7 by Marco Squarcina, see LICENSE for details'
+			print('minimalsite-0.7 by Marco Squarcina, see LICENSE for details')
 			sys.exit(0)
 		elif o in ("-h", "--help"):
-			print '''Usage: minimalsite.py [options]
+			print('''Usage: minimalsite.py [options]
 
 Options:
   -h, --help                     Show help options
@@ -229,7 +229,7 @@ Options:
   -v, --verbose                  Display the entire tree structure
   -t, --template=TEMPLATE        Specify a template
   -s, --src_dir=SOURCE_DIR       Specify source dir to use
-  -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use'''
+  -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use''')
 			sys.exit(0)
 		elif o in ("-t", "--template"):
 			template_module = 'templates.' + a
@@ -267,12 +267,12 @@ Options:
 		sys.stderr.write('"' + template.src_dir + '" does not include a valid index file, aborting\n')
 		sys.exit(2)
 	# start writing pages
-	print 'Processing files in "' + template.src_dir + '":\n'
+	print('Processing files in "' + template.src_dir + '":\n')
 	root = Node(template.src_dir, 0)
 	root.name = template.home
 	build_tree(root)
 	write_tree(root)
-	print '\n... Done!'
+	print('\n... Done!')
 	if verbose:
 		sys.stderr.write("\nSite structure:\n\n")
 		print_tree(root)
