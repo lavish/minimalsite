@@ -69,8 +69,8 @@ def get_dst_pathname(src_pathname):
 		dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
 	dst_pathname = ''.join(dst_pathname)
 	# change destination dir
-	dst_pathname = string.join(template.dst_dir.split('/')
-		+ dst_pathname.split('/')[len(template.src_dir.split('/')):], '/')
+	dst_pathname = '/'.join(template.dst_dir.split('/')
+		+ dst_pathname.split('/')[len(template.src_dir.split('/')):])
 	# remove index numbers for dirs and files
 	return re.sub('\/\d+_', '/', dst_pathname)
 
