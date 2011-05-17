@@ -14,8 +14,8 @@ from a file hierarchy with markdown and textile syntax.
 
 ### Requirements
 
-In order to run minimalsite you need a working Python 2.X installation and the
-following modules:
+In order to run minimalsite you need a working Python 2.X or 3.X installation
+and the following modules:
 
 * [Python Markdown][] for markdown syntax support
 * [PyTextile][] for textile syntax support
