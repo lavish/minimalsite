@@ -218,7 +218,7 @@ def main():
 		sys.exit(1)
 	for o, a in opts:
 		if o in ("-V", "--version"):
-			print('minimalsite-0.7 by Marco Squarcina, see LICENSE for details')
+			print('minimalsite-0.8 by Marco Squarcina, see LICENSE for details')
 			sys.exit(0)
 		elif o in ("-h", "--help"):
 			print('''Usage: minimalsite.py [options]
