@@ -30,8 +30,9 @@ home = "home"
 # the separator character used for the navigation path
 path_separator = "/"
 
-# set the extensions used for markdown and textile files
-src_ext = {"markdown": "md", "textile": "tt"}
+# set the extensions used for markdown, textile and plain files that don't need
+# to be parsed
+src_ext = {"markdown": "md", "textile": "tt", "plain": "txt"}
 
 # set the extension used for destination files. For example if you plan to
 # embed php code you can write "php" here
@@ -39,7 +40,7 @@ dst_ext = "html"
 
 # set the list of pages that should be parsed but you don't want to display n
 # the menu
-hidden = set(["404.md", "500.md", "404.tt", "500.tt"])
+hidden = set(["404.md", "500.md", "404.tt", "500.tt", "400.txt", "500.txt"])
 
 
 current_time = datetime.datetime.now()

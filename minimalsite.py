@@ -146,6 +146,9 @@ def write_page(node):
 	elif(syntax(node.src_pathname) == "textile"
 	and "textile" in template.src_ext):
 		dst_content += textile.textile(src_content)
+	elif(syntax(node.src_pathname) == "plain"
+	and "plain" in template.src_ext):
+		dst_content += src_content
 	dst_content += template.footer(node)
 	dst_content = dst_content.replace("%%%PATH%%%", path(node))
 	dst_content = dst_content.replace("%%%MENU%%%", menu(node))
@@ -218,7 +221,7 @@ def main():
 		sys.exit(1)
 	for o, a in opts:
 		if o in ("-V", "--version"):
-			print('minimalsite-0.8 by Marco Squarcina, see LICENSE for details')
+			print('minimalsite-0.9 by Marco Squarcina, see LICENSE for details')
 			sys.exit(0)
 		elif o in ("-h", "--help"):
 			print('''Usage: minimalsite.py [options]
