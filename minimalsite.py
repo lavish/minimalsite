@@ -256,9 +256,12 @@ Options:
 		sys.exit(3)
 	# check src and dst directories
 	if src_dir:
-		template.src_dir = os.path.abspath(src_dir)
+		template.src_dir = src_dir
 	if dst_dir:
-		template.dst_dir = os.path.abspath(dst_dir)
+		template.dst_dir = dst_dir
+	# fix trailing slashes
+	template.src_dir = os.path.abspath(template.src_dir)
+	template.dst_dir = os.path.abspath(template.dst_dir)
 	if not os.path.isdir(template.src_dir):
 		sys.stderr.write('"' + template.src_dir + '" is not a directory, aborting\n')
 		sys.exit(2)
