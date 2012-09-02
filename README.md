@@ -36,10 +36,10 @@ There's no need to install the tool: download, unpack and run.
 	  -h, --help            show this help message and exit
 	  -V, --verbose         display version
 	  -t TEMPLATE, --template TEMPLATE
-				specify a template: valid arguments are module names
-				without path and extension
+	                        specify a template: valid arguments are module names
+	                        without path and extension
 	  -s SRC, --src SRC     source dir, where the markdown/textile hierarchy
-				resides
+	                        resides
 	  -d DST, --dst DST     destination dir, where the html pages will be written
 	  -v, --version         show program's version number and exit
 

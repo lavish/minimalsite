@@ -202,7 +202,7 @@ def path(node):
     return path
 
 def die(msg, code=1):
-    sys.stderr.write(msg + "\n")
+    sys.stderr.write("[!] {}\n".format(msg))
     sys.exit(code)
 
 def main():
@@ -239,12 +239,10 @@ def main():
     template.dst = os.path.abspath(template.dst)
     for directory in [template.src, template.dst]:
         if not os.path.isdir(directory):
-            sys.stderr.write('"{}" is not a directory, aborting\n'.format(directory))
-            sys.exit(2)
+            die('{} is not a directory, aborting'.format(directory), 2)
     # check if src dir includes an index file
     if not has_index(template.src):
-        sys.stderr.write('"' + template.src + '" does not include a valid index file, aborting\n')
-        sys.exit(2)
+        die('{} does not include a valid index file, aborting'.format(template.src), 2)
     # start writing pages
     print('[*] Processing files in "{}"'.format(template.src))
     root = TreeNode(Page(template.src, 0))
