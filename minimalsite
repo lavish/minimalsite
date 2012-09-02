@@ -25,25 +25,99 @@ __copyright__   = "Copyright 2012, Marco Squarcina"
 __status__      = "Development"
 __version__     = "0.91"
 
-# class definition
 
-class Node:
-    def __init__(self, src_pathname, level, parent = None):
+# class definitions
+
+class MetaPage:
+    def __init__(self, src_pathname, level):
         self.src_pathname = src_pathname
         self.dst_pathname = get_dst_pathname(src_pathname)
         self.src_file = os.path.basename(self.src_pathname)
         self.dst_file = os.path.basename(self.dst_pathname)
         self.name = get_name(self.dst_pathname)
         self.level = level
-        self.parent = parent
-        self.children = []
 
     def __str__(self):
-        node = "<{}, {}, {}, {}, {}, {}>"
-        return node.format(self.src_pathname, self.dst_pathname, self.src_file, self.dst_file, self.name, self.level)
+        metadata = "<{}, {}, {}, {}, {}, {}>"
+        return metadata.format(self.src_pathname, self.dst_pathname, self.src_file, self.dst_file, self.name, self.level)
 
-    def add_child(self, obj):
-        self.children.append(obj)
+class TreeNode:
+    def __init__(self, metapage, parent = None):
+        self.metapage = metapage
+        self.parent = parent
+        self.children = []
+ 
+    def dump(self, margin = ''):
+        """Dump the entire tree structure."""
+
+        sys.stderr.write(margin + str(self.metapage) + "\n") 
+        for child in self.children:
+            child.dump(margin + '    ')
+
+    def build(self):
+        """Recursively create a tree representing the sources file
+        hierarchy."""
+
+        for file in os.listdir(self.metapage.src_pathname):
+            pathname = os.path.join(self.metapage.src_pathname, file)
+            # do not add nodes for links and files starting with '.'
+            if os.path.islink(pathname) or file[0] == ".":
+                continue
+            # add nodes for files with an allowed extension
+            elif os.path.isfile(pathname) and syntax(pathname):
+                node = TreeNode(MetaPage(pathname, self.metapage.level + 1), self)
+                self.children.append(node)
+            # add nodes for directories and go on building the tree
+            elif os.path.isdir(pathname) and has_index(pathname):
+                node = TreeNode(MetaPage(pathname, self.metapage.level + 1), self)
+                self.children.append(node)
+                node.build()
+
+    def write(self, margin = ''):
+        """Recursively write all the corresponding pages on the file system."""
+
+        # a directory
+        if self.children:
+            # create the destination dir, if possible
+            try:
+                os.makedirs(self.metapage.dst_pathname)
+            except OSError:
+                pass
+            else:
+                print(margin + "creating -> " + self.metapage.dst_pathname)
+            # recursivly call write_tree against current node
+            for child in self.children:
+                child.write(margin + '    ')
+        # a file
+        else:
+            print(margin + self.metapage.dst_pathname)
+            self.write_page()
+
+    def write_page(self):
+        """Write on the file system its corresponding page."""
+
+        # open source file
+        h_src_pathname = codecs.open(self.metapage.src_pathname, "r", "utf-8");
+        src_content = h_src_pathname.read()
+        h_src_pathname.close()
+        # build page
+        dst_content = template.header(self)
+        if(syntax(self.metapage.src_pathname) == "markdown"
+        and "markdown" in template.src_ext):
+            dst_content += markdown.markdown(src_content)
+        elif(syntax(self.metapage.src_pathname) == "textile"
+        and "textile" in template.src_ext):
+            dst_content += textile.textile(src_content)
+        elif(syntax(self.metapage.src_pathname) == "plain"
+        and "plain" in template.src_ext):
+            dst_content += src_content
+        dst_content += template.footer(self)
+        dst_content = dst_content.replace("%%%PATH%%%", path(self))
+        dst_content = dst_content.replace("%%%MENU%%%", menu(self))
+        # write destionation file
+        h_dst_pathname = codecs.open(self.metapage.dst_pathname, "w", "utf-8")
+        h_dst_pathname.write(dst_content)
+        h_dst_pathname.close()
 
 
 # functions definition
@@ -88,20 +162,20 @@ def menu(node):
     """Given a node, returns a multine string of the menu code."""
 
     menu_code = "<ul>\n"
-    for sibling in sorted(node.parent.children, key=lambda sibling: sibling.src_pathname):
+    for sibling in sorted(node.parent.children, key=lambda sibling: sibling.metapage.src_pathname):
         # and index page or a hidden file, no need to include them
-        if sibling.dst_file.startswith("index.") or sibling.src_file in template.hidden:
+        if sibling.metapage.dst_file.startswith("index.") or sibling.metapage.src_file in template.hidden:
             continue
         # a page
         elif not sibling.children:
-            menu_code += '\t<li><a href="{}"'.format(sibling.dst_file)
+            menu_code += '\t<li><a href="{}"'.format(sibling.metapage.dst_file)
             # current page
             if node == sibling:
                 menu_code += ' class="current"'
-            menu_code += '>{}</a></li>\n'.format(sibling.name)
+            menu_code += '>{}</a></li>\n'.format(sibling.metapage.name)
         # a directory
         else:
-            menu_code += '\t<li><a href="{}/index.{}">{}</a></li>\n'.format(sibling.dst_file, template.dst_ext, sibling.name)
+            menu_code += '\t<li><a href="{}/index.{}">{}</a></li>\n'.format(sibling.metapage.dst_file, template.dst_ext, sibling.metapage.name)
     menu_code += "</ul>"
     return menu_code
 
@@ -115,90 +189,21 @@ def path(node):
         path_node.insert(0, tmp_node)
         tmp_node = tmp_node.parent
     # no need to display "index" in the path
-    if path_node[-1].name == "index":
+    if path_node[-1].metapage.name == "index":
         path_node.pop()
     for i in range(0, len(path_node)):
         # last item, it could be current page or current dir
         if i == len(path_node) - 1:
-            path += path_node[i].name
+            path += path_node[i].metapage.name
         # a parent page
         else:
-            traversal = "../" * (node.level - path_node[i].level - 1)
-            path += '<a href="{}index.{}">{}</a> {} '.format(traversal, template.dst_ext, path_node[i].name, template.path_separator)
+            traversal = "../" * (node.metapage.level - path_node[i].metapage.level - 1)
+            path += '<a href="{}index.{}">{}</a> {} '.format(traversal, template.dst_ext, path_node[i].metapage.name, template.path_separator)
     return path
 
-def write_page(node):
-    """Given a node, write on the file system its corresponding page."""
-
-    # open source file
-    h_src_pathname = codecs.open(node.src_pathname, "r", "utf-8");
-    src_content = h_src_pathname.read()
-    h_src_pathname.close()
-    # build page
-    dst_content = template.header(node)
-    if(syntax(node.src_pathname) == "markdown"
-    and "markdown" in template.src_ext):
-        dst_content += markdown.markdown(src_content)
-    elif(syntax(node.src_pathname) == "textile"
-    and "textile" in template.src_ext):
-        dst_content += textile.textile(src_content)
-    elif(syntax(node.src_pathname) == "plain"
-    and "plain" in template.src_ext):
-        dst_content += src_content
-    dst_content += template.footer(node)
-    dst_content = dst_content.replace("%%%PATH%%%", path(node))
-    dst_content = dst_content.replace("%%%MENU%%%", menu(node))
-    # write destionation file
-    h_dst_pathname = codecs.open(node.dst_pathname, "w", "utf-8")
-    h_dst_pathname.write(dst_content)
-    h_dst_pathname.close()
-
-def print_tree(node, margin = ''):
-    """Given a node, display the entire tree structure from that node."""
-
-    if node:
-        sys.stderr.write(margin + str(node) + "\n") 
-        for child in node.children:
-            print_tree(child, margin + '    ')
-
-def build_tree(node):
-    """Given a node, recursively create a tree representing the sources file
-    hierarchy starting from that node."""
-
-    for file in os.listdir(node.src_pathname):
-        pathname = os.path.join(node.src_pathname, file)
-        # do not add nodes for links and files starting with '.'
-        if os.path.islink(pathname) or file[0] == ".":
-            continue
-        # add nodes for files with an allowed extension
-        elif os.path.isfile(pathname) and syntax(pathname):
-            node.add_child(Node(pathname, node.level + 1, node))
-        # add nodes for directories and go on building the tree
-        elif os.path.isdir(pathname) and has_index(pathname):
-            node.add_child(Node(pathname, node.level + 1, node))
-            # -1 used to specify the last added node
-            build_tree(node.children[-1])
-
-def write_tree(node, margin = ''):
-    """Given a node, recursively write all the corresponding pages on the file
-    system."""
-
-    # a directory
-    if node.children:
-        # create the destination dir, if possible
-        try:
-            os.makedirs(node.dst_pathname)
-        except OSError:
-            pass
-        else:
-            print(margin + "creating -> " + node.dst_pathname)
-        # recursivly call write_tree against current node
-        for child in node.children:
-            write_tree(child, margin + '    ')
-    # a file
-    else:
-        print(margin + node.dst_pathname)
-        write_page(node)
+def die(msg, code=1):
+    sys.stderr.write(msg + "\n")
+    sys.exit(code)
 
 def main():
     global template
@@ -224,7 +229,6 @@ def main():
             del template.src_ext[markup]
     if not template.src_ext:
         sys.stderr.write("No modules for parsing files found. See README for requirements\n")
-        sys.exit(3)
     # check src and dst directories
     if args.src:
         template.src = args.src
@@ -235,7 +239,7 @@ def main():
     template.dst = os.path.abspath(template.dst)
     for directory in [template.src, template.dst]:
         if not os.path.isdir(directory):
-            sys.stderr.write('"' + directory + '" is not a directory, aborting\n')
+            sys.stderr.write('"{}" is not a directory, aborting\n'.format(directory))
             sys.exit(2)
     # check if src dir includes an index file
     if not has_index(template.src):
@@ -243,15 +247,15 @@ def main():
         sys.exit(2)
     # start writing pages
     print('[*] Processing files in "{}"'.format(template.src))
-    root = Node(template.src, 0)
-    root.name = template.home
-    build_tree(root)
+    root = TreeNode(MetaPage(template.src, 0))
+    root.metapage.name = template.home
+    root.build()
     print('[*] Writing {} files into "{}"'.format(template.dst_ext, template.dst))
-    write_tree(root)
+    root.write()
     if args.verbose:
         sys.stderr.write("\n[*] Site structure")
         sys.stderr.write(" (values as: <src_pathname, dst_pathname, src_file, dst_file, name, level>)\n")
-        print_tree(root)
+        root.dump()
 
 if __name__ == "__main__":
     main()

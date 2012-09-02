@@ -62,20 +62,20 @@ def menu_(node, cur_node, node_prefix = prefix, indent = ''):
 	global menu_code
 
 	menu_code += indent + '<ul>\n'
-	for child in sorted(node.children, key=lambda n: n.src_pathname):
-		if child.dst_file.startswith("index.") or child.src_file in hidden:
+	for child in sorted(node.children, key=lambda n: n.metapage.src_pathname):
+		if child.metapage.dst_file.startswith("index.") or child.metapage.src_file in hidden:
 			continue
-		menu_code += indent + '<li class="level-' + str(child.level) + '"><a '
+		menu_code += indent + '<li class="level-' + str(child.metapage.level) + '"><a '
 		if(child == cur_node
-		or (cur_node.dst_file.startswith("index.") and child == cur_node.parent)):
+		or (cur_node.metapage.dst_file.startswith("index.") and child == cur_node.parent)):
 			menu_code += 'class="current" '
-		menu_code += 'href="' + node_prefix + child.dst_file
+		menu_code += 'href="' + node_prefix + child.metapage.dst_file
 		if child.children:
-			menu_code += "/index." + dst_ext + '">'	+ child.name + '</a>\n'
-			menu_(child, cur_node, node_prefix + child.dst_file + '/', indent + '\t')
+			menu_code += "/index." + dst_ext + '">'	+ child.metapage.name + '</a>\n'
+			menu_(child, cur_node, node_prefix + child.metapage.dst_file + '/', indent + '\t')
 			menu_code += indent + '</li>\n'
 		else:
-			menu_code += '">'   + child.name + '</a></li>\n'
+			menu_code += '">'   + child.metapage.name + '</a></li>\n'
 	menu_code += indent + '</ul>\n'
 
 def header(node):
@@ -86,7 +86,7 @@ def header(node):
 	<head>
 		<meta charset="utf-8" />
 		<meta name="author" content="''' + author + '''" />
-		<title>''' + site_name + ' | ' + node.name + '''</title>
+		<title>''' + site_name + ' | ' + node.metapage.name + '''</title>
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<style type="text/css">
 			#container {
@@ -150,7 +150,7 @@ def header(node):
 	<body>
 		<div id="container">
 			<header>
-				<h1><a href="''' + '../' * node.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
+				<h1><a href="''' + '../' * node.metapage.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
 			</header>
 			<div id="path">
 				You are here: %%%PATH%%%
@@ -168,7 +168,7 @@ def footer(node):
 	return '''
 				</div>
 				<div id="edit">
-					Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.src_pathname))) + '''
+					Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.metapage.src_pathname))) + '''
 				</div>
 			</div>
 			<footer>
