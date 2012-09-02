@@ -28,25 +28,27 @@ There's no need to install the tool: download, unpack and run.
 
 ### Running minimalsite
 
-    Usage: minimalsite.py [options]
+	usage: minimalsite [-h] [-V] [-t TEMPLATE] [-s SRC] [-d DST] [-v]
 
-    Options:
-      -h, --help                     Show help options
-      -V, --version                  Display minimalsite version
-      -v, --verbose                  Display the entire tree structure
-      -t, --template=TEMPLATE        Specify a template
-      -s, --src_dir=SOURCE_DIR       Specify source dir to use
-      -d, --dst_dir=DESTINATION_DIR  Specify destionation dir to use
+	Fast minimal static website builder
 
-`SOURCE_DIR` is the directory containing the source file hierarchy and
-`DESTINATION_DIR` the directory where you want to create web pages.
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -V, --verbose         display version
+	  -t TEMPLATE, --template TEMPLATE
+				specify a template: valid arguments are module names
+				without path and extension
+	  -s SRC, --src SRC     source dir, where the markdown/textile hierarchy
+				resides
+	  -d DST, --dst DST     destination dir, where the html pages will be written
+	  -v, --version         show program's version number and exit
 
-You can also add different templates under the `templates/` directory and
-specify `TEMPLATE` using your template file name. For example, to use
-`templates/minimalblue.py`, you will run `./minimalsite -t minimalblue ...`
+You can add your own templates under the `templates/` directory. You can feed
+minimalsite with your template be specifying only the template file name, i.e.,
+to use `templates/minimalblue.py`, you will run `./minimalsite -t minimalblue`
 
-Please note that you need to place an index file in in each directory you want
-to parse, otherwise those directories will be ignored.
+Please note that you need to place an index file in each directory you want to
+parse, otherwise those directories will be ignored.
 
 
 ### Configuration

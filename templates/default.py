@@ -11,13 +11,13 @@ author = "Author Name"
 
 # source dir containing the markup file hierarchy, like
 # "/home/marco/website/src". It is not mandatory to set this value here, you
-# can specify the value of this variable at runtime, see minimalsite.py -h
-src_dir = ""
+# can specify the value of this variable at runtime, see 'minimalsite -h'
+src = ""
 
 # destination dir for your site, usually under the webroot pathname, like
 # "/var/www/marco/htdocs". It is not mandatory to set this value here, you can
-# specify the value of this variable at runtime, see minimalsite.py -h
-dst_dir = ""
+# specify the value of this variable at runtime, see 'minimalsite -h'
+dst = ""
 
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user/"
