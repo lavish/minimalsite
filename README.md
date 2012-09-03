@@ -1,8 +1,12 @@
 MinimalSite
 ===========
 
-minimalsite is a fast minimal static website builder. It generates web pages
-from a file hierarchy with markdown and textile syntax.
+A fast minimal static website builder.
+
+Minimalsite generates web pages from a source file hierarchy. It supports
+markdown and textile syntax, but plain txt and html can be evenly used.
+Templates are python modules, providing huge flexibilty and keeping the
+codebase tiny and simple.
 
 
 ### Requirements
