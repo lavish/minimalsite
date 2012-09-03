@@ -47,11 +47,11 @@ CLASSES
      |  
      |  __init__(self, page, parent=None)
      |  
+     |  __str__(self)
+     |      Return the entire tree structure.
+     |  
      |  build(self)
      |      Create the site tree, representing the source file hierarchy.
-     |  
-     |  dump(self, margin='')
-     |      Dump to stderr the entire tree structure.
      |  
      |  menu(self)
      |      Return the generated code for menu.

@@ -101,13 +101,6 @@ class TreeNode:
         self.parent = parent
         self.children = []
 
-    def dump(self, margin = ''):
-        """Dump to stderr the entire tree structure."""
-
-        sys.stderr.write(margin + str(self.page) + "\n") 
-        for child in self.children:
-            child.dump(margin + '    ')
-
     def build(self):
         """Create the site tree, representing the source file hierarchy."""
 
@@ -238,6 +231,14 @@ class TreeNode:
                 return True
         return False
 
+    def __str__(self):
+        """Return the entire tree structure."""
+
+        tree = "    " * self.page.level + str(self.page) + "\n"
+        for child in self.children:
+            tree += str(child)
+        return tree
+
 
 # function definitions
 
@@ -296,7 +297,7 @@ def main():
     if args.verbose:
         notice('Printing site structure')
         notice('values as: <src_pathname, dst_pathname, src_file, dst_file, name, level>')
-        root.dump()
+        print(root)
 
 if __name__ == "__main__":
     main()

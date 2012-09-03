@@ -15,7 +15,7 @@ FUNCTIONS
 
 DATA
     author = 'Author Name'
-    current_time = datetime.datetime(2012, 9, 3, 15, 14, 44, 22664)
+    current_time = datetime.datetime(2012, 9, 3, 15, 30, 22, 928748)
     dst = ''
     dst_ext = 'html'
     hidden = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....
