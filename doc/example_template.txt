@@ -19,7 +19,7 @@ FUNCTIONS
 
 DATA
     author = 'Marco Squarcina'
-    current_time = datetime.datetime(2012, 9, 4, 0, 47, 26, 747781)
+    current_time = datetime.datetime(2012, 9, 4, 1, 10, 50, 549896)
     dst = ''
     dst_ext = 'html'
     hidden = set(['404.md', '500.md', 'search.md'])

@@ -67,6 +67,9 @@ CLASSES
      |      Write the generated site on the file system.
 
 FUNCTIONS
+    check_template()
+        Check mandatory variable/function definitions in the provided template.
+    
     die(msg, code=1)
         Write an error message to stderr and exit.
     

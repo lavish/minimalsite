@@ -4,7 +4,7 @@
 PROJECT	= minimalsite
 VERSION	= 0.99
 OBJ	= ${PROJECT}.pyc default_template.pyc example_template.pyc __pycache__
-SRC	= ${PROJECT} default_template.py example_template.py templates/example.py style.css
+SRC	= ${PROJECT} default_template.py example_template.py style.css
 DOC	= doc/
 
 ${PROJECT}:
@@ -24,7 +24,7 @@ doc:
 dist: clean doc
 	@echo Creating dist tarball
 	mkdir -p ${PROJECT}-${VERSION}
-	@cp -R README.md LICENSE Makefile ${DOC} ${SRC} ${PROJECT}-${VERSION}
+	@cp -R README.md LICENSE Makefile ${DOC} *.py ${PROJECT}-${VERSION}
 	@tar --exclude=".*" -cf ${PROJECT}-${VERSION}.tar ${PROJECT}-${VERSION}
 	@gzip ${PROJECT}-${VERSION}.tar
 	rm -rf ${PROJECT}-${VERSION}

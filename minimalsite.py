@@ -267,6 +267,16 @@ def import_template(pathname):
     else:
         die("Invalid template file name. Valid templates must terminate with '_template.py'.")
 
+def check_template():
+    """Check mandatory variable/function definitions in the provided template."""
+
+    template_data = dir(template)
+    required_data = ['dst', 'dst_ext', 'footer', 'header', 'hidden', 'home', \
+        'path_separator', 'prefix', 'site_name', 'src', 'src_ext']
+    for data in required_data:
+        if not data in template_data:
+            die("Missing {} definition in template file. Aborting.".format(data))
+
 def notice(msg):
     """Write a notice message to stdout."""
 
@@ -296,7 +306,7 @@ def main():
     # load template
     template = import_template(args.template)
     # check template integrity
-    #check_template(template) [TODO]
+    check_template()
     # check markup modules
     for markup in ('markdown', 'textile'):
         if not markup in sys.modules:
