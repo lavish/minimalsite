@@ -50,7 +50,7 @@ def header(node):
 	<head>
 		<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 		<meta name="author" content="''' + author + '''" />
-		<title>''' + site_name + ' | ' + (node.parent.page.name if node.page.name == 'index' else node.page.name) + '''</title>
+		<title>%%%TITLE%%%</title>
 		<link href="''' + '../' * (node.page.level-1) + '''style.css" rel="stylesheet" type="text/css" media="screen" />
 	</head>
 	<body>

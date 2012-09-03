@@ -84,7 +84,7 @@ def header(node):
 	<head>
 		<meta charset="utf-8" />
 		<meta name="author" content="''' + author + '''" />
-        <title>''' + site_name + ' | ' + (node.parent.page.name if node.page.name == 'index' else node.page.name) + '''</title>
+        <title>%%%TITLE%%%</title>
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<style type="text/css">
 			#container {

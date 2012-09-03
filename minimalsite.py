@@ -13,6 +13,7 @@ codebase tiny and simple.
 import os
 import re
 import sys
+import imp
 import string
 import codecs
 import argparse
@@ -145,6 +146,15 @@ class TreeNode:
             print(margin + self.page.dst_pathname)
             self._write_page()
 
+    def title(self):
+        """Return the title for the current node."""
+    
+        if self.page.name == 'index':
+            page_name = self.parent.page.name
+        else:
+            page_name = self.page.name
+        return template.site_name + ' | ' + page_name
+
     def menu(self):
         """Return the generated code for menu."""
 
@@ -209,6 +219,7 @@ class TreeNode:
         and "plain" in template.src_ext:
             dst_content += src_content
         dst_content += template.footer(self)
+        dst_content = dst_content.replace("%%%TITLE%%%", self.title())
         dst_content = dst_content.replace("%%%PATH%%%", self.path())
         dst_content = dst_content.replace("%%%MENU%%%", self.menu())
         # write destionation file
@@ -242,12 +253,23 @@ class TreeNode:
 
 # function definitions
 
+def import_template(filename):
+    """Load the python module in the provided file name as a template."""
+
+    (path, name) = os.path.split(filename)
+    (name, ext) = os.path.splitext(name)
+
+    (file, filename, data) = imp.find_module(name, [path])
+    return imp.load_module(name, file, filename, data)
+
 def notice(msg):
     """Write a notice message to stdout."""
+
     print("[*] {}".format(msg))
 
 def die(msg, code=1):
     """Write an error message to stderr and exit."""
+
     sys.stderr.write("[!] {}\n".format(msg))
     sys.exit(code)
 
@@ -258,7 +280,7 @@ def main():
     parser.add_argument('-V', '--verbose', action='store_true', \
         default=False, help='verbosely display site structure')
     parser.add_argument('-t', '--template', type=str, default='default', \
-        help='specify a template: valid arguments are module names without path and extension')
+        help='specify a template file')
     parser.add_argument('-s', '--src', type=str, default=None, \
         help='source dir, where the textual hierarchy resides')
     parser.add_argument('-d', '--dst', type=str, default=None, \
@@ -267,9 +289,7 @@ def main():
     args = parser.parse_args()
 
     # load template
-    args.template = 'templates.' + args.template
-    __import__(args.template)
-    template = sys.modules[args.template]
+    template = import_template(args.template)
     # check markup modules
     for markup in ('markdown', 'textile'):
         if not markup in sys.modules:
