@@ -1,8 +1,6 @@
-# Author:      Marco Squarcina <lavish@gmail.com>
-# License:     MIT, see LICENSE for details
-
 import os
-import time, datetime
+import time
+import datetime
 
 # the name of your site
 site_name = "My HTML5 Website"
@@ -79,7 +77,7 @@ def menu_(node, cur_node, node_prefix = prefix, indent = ''):
 	menu_code += indent + '</ul>\n'
 
 def header(node):
-	"""Builds the header and returns it to a string."""
+	"""Build the header and return it to a string."""
 	
 	return '''<!DOCTYPE html>
 <html lang="en">
@@ -163,7 +161,7 @@ def header(node):
 '''
 
 def footer(node):
-	"""Builds the footer and returns it to a string."""
+	"""Build the footer and return it to a string."""
 
 	return '''
 				</div>

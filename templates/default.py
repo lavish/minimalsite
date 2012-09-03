@@ -1,6 +1,3 @@
-# Author:      Marco Squarcina <lavish@gmail.com>
-# License:     MIT, see LICENSE for details
-
 import datetime
 
 # the name of your site
@@ -46,7 +43,7 @@ hidden = set(["404.md", "500.md", "404.tt", "500.tt", "400.txt", "500.txt"])
 current_time = datetime.datetime.now()
 
 def header(node):
-	"""Builds the header and returns it to a string."""
+	"""Build the header and return it to a string."""
 
 	return '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -72,7 +69,7 @@ def header(node):
 '''
 
 def footer(node):
-	"""Builds the footer and returns it to a string."""
+	"""Build the footer and return it to a string."""
 
 	return '''
 				</div>
