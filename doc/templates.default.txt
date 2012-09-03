@@ -1,0 +1,29 @@
+Help on module templates.default in templates:
+
+NAME
+    templates.default
+
+FILE
+    /home/lavish/repo/minimalsite/templates/default.py
+
+FUNCTIONS
+    footer(node)
+        Build the footer and return it to a string.
+    
+    header(node)
+        Build the header and return it to a string.
+
+DATA
+    author = 'Author Name'
+    current_time = datetime.datetime(2012, 9, 3, 15, 7, 11, 878523)
+    dst = ''
+    dst_ext = 'html'
+    hidden = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....
+    home = 'home'
+    path_separator = '/'
+    prefix = '/'
+    site_name = 'My Site'
+    src = ''
+    src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+
+

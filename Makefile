@@ -17,8 +17,10 @@ doc:
 	@echo Generating documentation
 	@rm -rf ${DOC}
 	@mkdir ${DOC}
-	@pydoc -w minimalsite templates templates.default templates.example
-	@mv *.html ${DOC}
+	@pydoc minimalsite > ${DOC}minimalsite.txt
+	@pydoc templates > ${DOC}templates.txt
+	@pydoc templates.default > ${DOC}templates.default.txt
+	@pydoc templates.example > ${DOC}templates.example.txt
 
 dist: clean doc
 	@echo Creating dist tarball

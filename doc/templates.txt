@@ -1,0 +1,13 @@
+Help on package templates:
+
+NAME
+    templates
+
+FILE
+    /home/lavish/repo/minimalsite/templates/__init__.py
+
+PACKAGE CONTENTS
+    default
+    example
+
+

@@ -1,0 +1,88 @@
+Help on module minimalsite:
+
+NAME
+    minimalsite - A fast minimal static website builder.
+
+FILE
+    /home/lavish/repo/minimalsite/minimalsite.py
+
+DESCRIPTION
+    Minimalsite generates web pages from a source file hierarchy. It supports
+    markdown and textile syntax, but plain txt and html can be evenly used.
+    Templates are python modules, providing huge flexibilty and keeping the
+    codebase tiny and simple.
+
+CLASSES
+    Page
+    TreeNode
+    
+    class Page
+     |  Meta informations of a page.
+     |  
+     |  Attributes:
+     |  
+     |      src_pathname    pathname of the source file 
+     |      dst_pathname    pathname of the generated file
+     |      src_file        file name of the source file
+     |      dst_file        file name of the generated file
+     |      name            file name of the generated file without extension
+     |      level           depth level in the site hierarchy
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, src_pathname, level)
+     |  
+     |  __str__(self)
+    
+    class TreeNode
+     |  Node of the site hierarchy tree structure.
+     |  
+     |  Attributes:
+     |  
+     |      page        Page object
+     |      parent      parent node, None if current node is the root
+     |      children    list of children
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, page, parent=None)
+     |  
+     |  build(self)
+     |      Create the site tree, representing the source file hierarchy.
+     |  
+     |  dump(self, margin='')
+     |      Dump to stderr the entire tree structure.
+     |  
+     |  menu(self)
+     |      Return the generated code for menu.
+     |  
+     |  path(self)
+     |      Return the generated code for breadcrumb navigation path.
+     |  
+     |  write(self, margin='')
+     |      Write the generated site on the file system.
+
+FUNCTIONS
+    die(msg, code=1)
+        Write an error message to stderr and exit.
+    
+    main()
+    
+    notice(msg)
+        Write a notice message to stdout.
+
+DATA
+    __author__ = 'Marco Squarcina <lavish at gmail.com>'
+    __copyright__ = 'Copyright 2012, Marco Squarcina'
+    __license__ = 'MIT'
+    __status__ = 'Development'
+    __version__ = '0.91'
+    template = None
+
+VERSION
+    0.91
+
+AUTHOR
+    Marco Squarcina <lavish at gmail.com>
+
+

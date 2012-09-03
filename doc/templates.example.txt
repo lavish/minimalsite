@@ -1,0 +1,34 @@
+Help on module templates.example in templates:
+
+NAME
+    templates.example
+
+FILE
+    /home/lavish/repo/minimalsite/templates/example.py
+
+FUNCTIONS
+    footer(node)
+        Build the footer and return it to a string.
+    
+    header(node)
+        Build the header and return it to a string.
+    
+    menu(node)
+    
+    menu_(node, cur_node, node_prefix='/', indent='')
+
+DATA
+    author = 'Marco Squarcina'
+    current_time = datetime.datetime(2012, 9, 3, 15, 7, 11, 931951)
+    dst = ''
+    dst_ext = 'html'
+    hidden = set(['404.md', '500.md', 'search.md'])
+    home = 'home'
+    menu_code = ''
+    path_separator = '<span class="separator">/</span>'
+    prefix = '/'
+    site_name = 'My HTML5 Website'
+    src = ''
+    src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+
+
