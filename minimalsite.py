@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 
-"""Minimalsite, a fast minimal static website builder. It generates web pages
-from a file hierarchy with markdown and textile syntax."""
+"""
+A fast minimal static website builder.
+
+Minimalsite generates web pages from a source file hierarchy. It supports
+markdown and textile syntax, but plain txt and html can be evenly used.
+Templates are python modules, providing huge flexibilty and keeping the
+codebase tiny and simple.
+
+"""
 
 import os
 import re
@@ -30,6 +37,19 @@ template        = None
 # class definitions
 
 class Page:
+    """
+    Meta informations of a page.
+    
+    Attributes:
+
+        src_pathname    pathname of the source file 
+        dst_pathname    pathname of the generated file
+        src_file        file name of the source file
+        dst_file        file name of the generated file
+        name            file name of the generated file without extension
+        level           depth level in the site hierarchy
+    """
+
     def __init__(self, src_pathname, level):
         self.src_pathname = src_pathname
         self.dst_pathname = self._get_dst_pathname()
@@ -65,6 +85,17 @@ class Page:
             self.src_file, self.dst_file, self.name, self.level)
 
 class TreeNode:
+    """
+    Node of the site hierarchy tree structure.
+
+    Attributes:
+
+        page        Page object
+        parent      parent node, None if current node is the root
+        children    list of children
+
+    """
+
     def __init__(self, page, parent = None):
         self.page = page
         self.parent = parent
@@ -211,9 +242,11 @@ class TreeNode:
 # function definitions
 
 def notice(msg):
+    """Write a notice message to stdout."""
     print("[*] {}".format(msg))
 
 def die(msg, code=1):
+    """Write an error message to stderr and exit."""
     sys.stderr.write("[!] {}\n".format(msg))
     sys.exit(code)
 
