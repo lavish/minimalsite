@@ -5,7 +5,7 @@ A fast minimal static website builder.
 
 Minimalsite generates web pages from a source file hierarchy. It supports
 markdown and textile syntax, but plain txt and html can be evenly used.
-Templates are python modules, providing huge flexibilty and keeping the
+Template files are python modules, providing huge flexibilty and keeping the
 codebase tiny and simple.
 
 """
@@ -31,9 +31,8 @@ __author__      = "Marco Squarcina <lavish at gmail.com>"
 __license__     = "MIT"
 __copyright__   = "Copyright 2012, Marco Squarcina"
 __status__      = "Development"
-__version__     = "0.91"
+__version__     = "0.99"
 
-template        = None
 
 # class definitions
 
@@ -81,6 +80,8 @@ class Page:
         return name.replace('_', ' ')
 
     def __str__(self):
+        """Return a textual representation of the page."""
+
         data = "<{}, {}, {}, {}, {}, {}>"
         return data.format(self.src_pathname, self.dst_pathname, \
             self.src_file, self.dst_file, self.name, self.level)
@@ -253,14 +254,18 @@ class TreeNode:
 
 # function definitions
 
-def import_template(filename):
+def import_template(pathname):
     """Load the python module in the provided file name as a template."""
 
-    (path, name) = os.path.split(filename)
+    if not os.path.isfile(pathname):
+        die("Template file does not exist. Aborting.")
+    (path, name) = os.path.split(pathname)
     (name, ext) = os.path.splitext(name)
-
-    (file, filename, data) = imp.find_module(name, [path])
-    return imp.load_module(name, file, filename, data)
+    if ext == '.py' and name.endswith('_template'):
+        (fd, pathname, data) = imp.find_module(name, [path])
+        return imp.load_module(name, fd, pathname, data)
+    else:
+        die("Invalid template file name. Valid templates must terminate with '_template.py'.")
 
 def notice(msg):
     """Write a notice message to stdout."""
@@ -277,10 +282,10 @@ def main():
     global template
 
     parser = argparse.ArgumentParser(description='Fast minimal static website builder')
+    parser.add_argument('-t', '--template', type=str, required=True, \
+        help="specify a template file name. Valid templates must terminate with '_template.py'")
     parser.add_argument('-V', '--verbose', action='store_true', \
         default=False, help='verbosely display site structure')
-    parser.add_argument('-t', '--template', type=str, default='default', \
-        help='specify a template file')
     parser.add_argument('-s', '--src', type=str, default=None, \
         help='source dir, where the textual hierarchy resides')
     parser.add_argument('-d', '--dst', type=str, default=None, \
@@ -290,6 +295,8 @@ def main():
 
     # load template
     template = import_template(args.template)
+    # check template integrity
+    #check_template(template) [TODO]
     # check markup modules
     for markup in ('markdown', 'textile'):
         if not markup in sys.modules:

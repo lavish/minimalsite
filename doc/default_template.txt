@@ -1,10 +1,10 @@
-Help on module templates.default in templates:
+Help on module default_template:
 
 NAME
-    templates.default
+    default_template
 
 FILE
-    /home/lavish/repo/minimalsite/templates/default.py
+    /home/lavish/repo/minimalsite/default_template.py
 
 FUNCTIONS
     footer(node)
@@ -15,7 +15,7 @@ FUNCTIONS
 
 DATA
     author = 'Author Name'
-    current_time = datetime.datetime(2012, 9, 3, 18, 7, 12, 913667)
+    current_time = datetime.datetime(2012, 9, 4, 0, 47, 26, 695233)
     dst = ''
     dst_ext = 'html'
     hidden = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....

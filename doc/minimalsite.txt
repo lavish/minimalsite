@@ -9,7 +9,7 @@ FILE
 DESCRIPTION
     Minimalsite generates web pages from a source file hierarchy. It supports
     markdown and textile syntax, but plain txt and html can be evenly used.
-    Templates are python modules, providing huge flexibilty and keeping the
+    Template files are python modules, providing huge flexibilty and keeping the
     codebase tiny and simple.
 
 CLASSES
@@ -33,6 +33,7 @@ CLASSES
      |  __init__(self, src_pathname, level)
      |  
      |  __str__(self)
+     |      Return a textual representation of the page.
     
     class TreeNode
      |  Node of the site hierarchy tree structure.
@@ -59,12 +60,18 @@ CLASSES
      |  path(self)
      |      Return the generated code for breadcrumb navigation path.
      |  
+     |  title(self)
+     |      Return the title for the current node.
+     |  
      |  write(self, margin='')
      |      Write the generated site on the file system.
 
 FUNCTIONS
     die(msg, code=1)
         Write an error message to stderr and exit.
+    
+    import_template(pathname)
+        Load the python module in the provided file name as a template.
     
     main()
     
@@ -76,11 +83,10 @@ DATA
     __copyright__ = 'Copyright 2012, Marco Squarcina'
     __license__ = 'MIT'
     __status__ = 'Development'
-    __version__ = '0.91'
-    template = None
+    __version__ = '0.99'
 
 VERSION
-    0.91
+    0.99
 
 AUTHOR
     Marco Squarcina <lavish at gmail.com>
