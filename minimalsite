@@ -25,38 +25,66 @@ __copyright__   = "Copyright 2012, Marco Squarcina"
 __status__      = "Development"
 __version__     = "0.91"
 
+template        = None
 
 # class definitions
 
 class Page:
     def __init__(self, src_pathname, level):
         self.src_pathname = src_pathname
-        self.dst_pathname = get_dst_pathname(src_pathname)
+        self.dst_pathname = self._get_dst_pathname()
         self.src_file = os.path.basename(self.src_pathname)
         self.dst_file = os.path.basename(self.dst_pathname)
-        self.name = get_name(self.dst_pathname)
+        self.name = self._get_name()
         self.level = level
+
+    def _get_dst_pathname(self):
+        """Get destination pathname from source pathname."""
+
+        # replace extension
+        dst_pathname = os.path.splitext(self.src_pathname)
+        if dst_pathname[1]:
+            dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
+        dst_pathname = ''.join(dst_pathname)
+        # change destination dir
+        dst_pathname = '/'.join(template.dst.split('/')
+            + dst_pathname.split('/')[len(template.src.split('/')):])
+        # remove index numbers for dirs and files
+        return re.sub('\/\d+_', '/', dst_pathname)
+
+    def _get_name(self):
+        """Get page name from destionation pathname."""
+
+        name = os.path.basename(self.dst_pathname)
+        name = os.path.splitext(name)[0]
+        return name.replace('_', ' ')
 
     def __str__(self):
         data = "<{}, {}, {}, {}, {}, {}>"
-        return data.format(self.src_pathname, self.dst_pathname, self.src_file, self.dst_file, self.name, self.level)
+        return data.format(self.src_pathname, self.dst_pathname, \
+            self.src_file, self.dst_file, self.name, self.level)
 
 class TreeNode:
     def __init__(self, page, parent = None):
         self.page = page
         self.parent = parent
         self.children = []
- 
+
     def dump(self, margin = ''):
-        """Dump the entire tree structure."""
+        """Dump to stderr the entire tree structure."""
 
         sys.stderr.write(margin + str(self.page) + "\n") 
         for child in self.children:
             child.dump(margin + '    ')
 
     def build(self):
-        """Recursively create a tree representing the sources file
-        hierarchy."""
+        """Create the site tree, representing the source file hierarchy."""
+
+        # check if src dir includes an index file
+        if self.page.level == 0 \
+        and not self._has_index(template.src):
+            die('Directory {} does not include a valid index file, aborting.'\
+                .format(template.src), 2)
 
         for file in os.listdir(self.page.src_pathname):
             pathname = os.path.join(self.page.src_pathname, file)
@@ -64,17 +92,17 @@ class TreeNode:
             if os.path.islink(pathname) or file[0] == ".":
                 continue
             # add nodes for files with an allowed extension
-            elif os.path.isfile(pathname) and syntax(pathname):
+            elif os.path.isfile(pathname) and self._syntax(pathname):
                 node = TreeNode(Page(pathname, self.page.level + 1), self)
                 self.children.append(node)
             # add nodes for directories and go on building the tree
-            elif os.path.isdir(pathname) and has_index(pathname):
+            elif os.path.isdir(pathname) and self._has_index(pathname):
                 node = TreeNode(Page(pathname, self.page.level + 1), self)
                 self.children.append(node)
                 node.build()
 
     def write(self, margin = ''):
-        """Recursively write all the corresponding pages on the file system."""
+        """Write the generated site on the file system."""
 
         # a directory
         if self.children:
@@ -84,17 +112,62 @@ class TreeNode:
             except OSError:
                 pass
             else:
-                print(margin + "creating -> " + self.page.dst_pathname)
+                print(margin + self.page.dst_pathname)
             # recursivly call write_tree against current node
             for child in self.children:
                 child.write(margin + '    ')
         # a file
         else:
             print(margin + self.page.dst_pathname)
-            self.write_page()
+            self._write_page()
 
-    def write_page(self):
-        """Write on the file system its corresponding page."""
+    def menu(self):
+        """Return the generated code for menu."""
+
+        menu_code = "<ul>\n"
+        for sibling in sorted(self.parent.children, key=lambda sibling: sibling.page.src_pathname):
+            # and index page or a hidden file, no need to include them
+            if sibling.page.dst_file.startswith("index.") or sibling.page.src_file in template.hidden:
+                continue
+            # a page
+            elif not sibling.children:
+                menu_code += '\t<li><a href="{}"'.format(sibling.page.dst_file)
+                # current page
+                if self == sibling:
+                    menu_code += ' class="current"'
+                menu_code += '>{}</a></li>\n'.format(sibling.page.name)
+            # a directory
+            else:
+                menu_code += '\t<li><a href="{}/index.{}">{}</a></li>\n' \
+                    .format(sibling.page.dst_file, template.dst_ext, sibling.page.name)
+        menu_code += "</ul>"
+        return menu_code
+
+    def path(self):
+        """Return the generated code for breadcrumb navigation path."""
+        
+        path = ""
+        path_node = []
+        tmp_node = self
+        while tmp_node:
+            path_node.insert(0, tmp_node)
+            tmp_node = tmp_node.parent
+        # no need to display "index" in the path
+        if path_node[-1].page.name == "index":
+            path_node.pop()
+        for i in range(0, len(path_node)):
+            # last item, it could be current page or current dir
+            if i == len(path_node) - 1:
+                path += path_node[i].page.name
+            # a parent page
+            else:
+                traversal = "../" * (self.page.level - path_node[i].page.level - 1)
+                path += '<a href="{}index.{}">{}</a> {} ' \
+                    .format(traversal, template.dst_ext, path_node[i].page.name, template.path_separator)
+        return path
+
+    def _write_page(self):
+        """Write a single page on the file system."""
 
         # open source file
         h_src_pathname = codecs.open(self.page.src_pathname, "r", "utf-8");
@@ -102,104 +175,43 @@ class TreeNode:
         h_src_pathname.close()
         # build page
         dst_content = template.header(self)
-        if(syntax(self.page.src_pathname) == "markdown"
-        and "markdown" in template.src_ext):
+        if self._syntax(self.page.src_pathname) == "markdown" \
+        and "markdown" in template.src_ext:
             dst_content += markdown.markdown(src_content)
-        elif(syntax(self.page.src_pathname) == "textile"
-        and "textile" in template.src_ext):
+        elif self._syntax(self.page.src_pathname) == "textile" \
+        and "textile" in template.src_ext:
             dst_content += textile.textile(src_content)
-        elif(syntax(self.page.src_pathname) == "plain"
-        and "plain" in template.src_ext):
+        elif self._syntax(self.page.src_pathname) == "plain" \
+        and "plain" in template.src_ext:
             dst_content += src_content
         dst_content += template.footer(self)
-        dst_content = dst_content.replace("%%%PATH%%%", path(self))
-        dst_content = dst_content.replace("%%%MENU%%%", menu(self))
+        dst_content = dst_content.replace("%%%PATH%%%", self.path())
+        dst_content = dst_content.replace("%%%MENU%%%", self.menu())
         # write destionation file
         h_dst_pathname = codecs.open(self.page.dst_pathname, "w", "utf-8")
         h_dst_pathname.write(dst_content)
         h_dst_pathname.close()
 
+    def _syntax(self, pathname):
+        """Return the markup language used in the given pathname."""
 
-# functions definition
+        for lang in list(template.src_ext.keys()):
+            if template.src_ext[lang] == pathname.split('.')[-1]:
+                    return lang
 
-def syntax(pathname):
-    """Returns the markup language used in the given pathname."""
+    def _has_index(self, pathname):
+        """Check if there's an index file in the given directory pathname."""
 
-    for lang in list(template.src_ext.keys()):
-        if template.src_ext[lang] == pathname.split('.')[-1]:
-                return lang
+        for lang in list(template.src_ext.keys()):
+            if os.path.isfile(pathname + "/index." + template.src_ext[lang]):
+                return True
+        return False
 
-def has_index(pathname):
-    """Check if there's an index file in the given directory pathname."""
 
-    for lang in list(template.src_ext.keys()):
-        if os.path.isfile(pathname + "/index." + template.src_ext[lang]):
-            return True
-    return False
+# function definitions
 
-def get_dst_pathname(src_pathname):
-    """Get destionation pathname from source pathname."""
-
-    # replace extension
-    dst_pathname = os.path.splitext(src_pathname)
-    if dst_pathname[1]:
-        dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
-    dst_pathname = ''.join(dst_pathname)
-    # change destination dir
-    dst_pathname = '/'.join(template.dst.split('/')
-        + dst_pathname.split('/')[len(template.src.split('/')):])
-    # remove index numbers for dirs and files
-    return re.sub('\/\d+_', '/', dst_pathname)
-
-def get_name(dst_pathname):
-    """Get page name from destionation pathname."""
-
-    name = os.path.basename(dst_pathname)
-    name = os.path.splitext(name)[0]
-    return name.replace('_', ' ')
-
-def menu(node):
-    """Given a node, returns a multine string of the menu code."""
-
-    menu_code = "<ul>\n"
-    for sibling in sorted(node.parent.children, key=lambda sibling: sibling.page.src_pathname):
-        # and index page or a hidden file, no need to include them
-        if sibling.page.dst_file.startswith("index.") or sibling.page.src_file in template.hidden:
-            continue
-        # a page
-        elif not sibling.children:
-            menu_code += '\t<li><a href="{}"'.format(sibling.page.dst_file)
-            # current page
-            if node == sibling:
-                menu_code += ' class="current"'
-            menu_code += '>{}</a></li>\n'.format(sibling.page.name)
-        # a directory
-        else:
-            menu_code += '\t<li><a href="{}/index.{}">{}</a></li>\n'.format(sibling.page.dst_file, template.dst_ext, sibling.page.name)
-    menu_code += "</ul>"
-    return menu_code
-
-def path(node):
-    """Given a node, returns a string of the breadcrumb navigation path code."""
-    
-    path = ""
-    path_node = []
-    tmp_node = node
-    while tmp_node:
-        path_node.insert(0, tmp_node)
-        tmp_node = tmp_node.parent
-    # no need to display "index" in the path
-    if path_node[-1].page.name == "index":
-        path_node.pop()
-    for i in range(0, len(path_node)):
-        # last item, it could be current page or current dir
-        if i == len(path_node) - 1:
-            path += path_node[i].page.name
-        # a parent page
-        else:
-            traversal = "../" * (node.page.level - path_node[i].page.level - 1)
-            path += '<a href="{}index.{}">{}</a> {} '.format(traversal, template.dst_ext, path_node[i].page.name, template.path_separator)
-    return path
+def notice(msg):
+    print("[*] {}".format(msg))
 
 def die(msg, code=1):
     sys.stderr.write("[!] {}\n".format(msg))
@@ -209,12 +221,13 @@ def main():
     global template
 
     parser = argparse.ArgumentParser(description='Fast minimal static website builder')
-    parser.add_argument('-V', '--verbose', action='store_true', default=False, help='display version')
-    parser.add_argument('-t', '--template', type=str, default='default',
+    parser.add_argument('-V', '--verbose', action='store_true', \
+        default=False, help='verbosely display site structure')
+    parser.add_argument('-t', '--template', type=str, default='default', \
         help='specify a template: valid arguments are module names without path and extension')
-    parser.add_argument('-s', '--src', type=str, default=None,
+    parser.add_argument('-s', '--src', type=str, default=None, \
         help='source dir, where the textual hierarchy resides')
-    parser.add_argument('-d', '--dst', type=str, default=None,
+    parser.add_argument('-d', '--dst', type=str, default=None, \
         help='destination dir, where the html pages will be written')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s-'+__version__)
     args = parser.parse_args()
@@ -228,7 +241,7 @@ def main():
         if not markup in sys.modules:
             del template.src_ext[markup]
     if not template.src_ext:
-        sys.stderr.write("No modules for parsing files found. See README for requirements\n")
+        die("No modules for parsing files found. See README for requirements.")
     # check src and dst directories
     if args.src:
         template.src = args.src
@@ -239,20 +252,17 @@ def main():
     template.dst = os.path.abspath(template.dst)
     for directory in [template.src, template.dst]:
         if not os.path.isdir(directory):
-            die('{} is not a directory, aborting'.format(directory), 2)
-    # check if src dir includes an index file
-    if not has_index(template.src):
-        die('{} does not include a valid index file, aborting'.format(template.src), 2)
+            die('Directory {} does not exist, aborting.'.format(directory), 2)
     # start writing pages
-    print('[*] Processing files in "{}"'.format(template.src))
+    notice('Processing files from {}'.format(template.src))
     root = TreeNode(Page(template.src, 0))
     root.page.name = template.home
     root.build()
-    print('[*] Writing {} files into "{}"'.format(template.dst_ext, template.dst))
+    notice('Writing {} files into {}'.format(template.dst_ext, template.dst))
     root.write()
     if args.verbose:
-        sys.stderr.write("\n[*] Site structure")
-        sys.stderr.write(" (values as: <src_pathname, dst_pathname, src_file, dst_file, name, level>)\n")
+        notice('Printing site structure')
+        notice('values as: <src_pathname, dst_pathname, src_file, dst_file, name, level>')
         root.dump()
 
 if __name__ == "__main__":

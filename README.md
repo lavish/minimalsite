@@ -4,13 +4,6 @@ MinimalSite
 minimalsite is a fast minimal static website builder. It generates web pages
 from a file hierarchy with markdown and textile syntax.
 
-                                               _                
-               o          o                   | |     o         
-     _  _  _       _  _       _  _  _    __,  | |  ,    _|_  _  
-    / |/ |/ |  |  / |/ |  |  / |/ |/ |  /  |  |/  / \_|  |  |/  
-      |  |  |_/|_/  |  |_/|_/  |  |  |_/\_/|_/|__/ \/ |_/|_/|__/
-
-
 
 ### Requirements
 
@@ -34,7 +27,7 @@ There's no need to install the tool: download, unpack and run.
 
 	optional arguments:
 	  -h, --help            show this help message and exit
-	  -V, --verbose         display version
+	  -V, --verbose         verbosely display site structure
 	  -t TEMPLATE, --template TEMPLATE
 	                        specify a template: valid arguments are module names
 	                        without path and extension
