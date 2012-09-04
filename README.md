@@ -96,11 +96,12 @@ using the default template. Source markdown files are written under
 	    /var/www/htdocs/contacts.html
 	    /var/www/htdocs/index.html
 	    /var/www/htdocs/software
-		/var/www/htdocs/software/irssi.html
-		/var/www/htdocs/software/index.html
-		/var/www/htdocs/software/vim.html
-		/var/www/htdocs/software/mutt.html
+	        /var/www/htdocs/software/irssi.html
+	        /var/www/htdocs/software/index.html
+	        /var/www/htdocs/software/vim.html
+	        /var/www/htdocs/software/mutt.html
 	    /var/www/htdocs/publications.html
+	$ cp /usr/local/share/minimalsite/style.css /var/www/htdocs
 	$
 
 
