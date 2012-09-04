@@ -54,7 +54,7 @@ your site by adding how many functions and features you want; See
 `example_template.py` for a more advanced template.
 
 
-### Extra Features
+### Features
 
 #### Page ordering
 
@@ -71,6 +71,37 @@ will be written as:
 
 and "university" will be displayed before "contacts" in the menu. Both files and
 directories are supported.
+
+
+### Example
+
+The following example explains how to run minimalsite to create a simple site
+using the default template. Source markdown files are written under
+`/home/lavish/mysite`, while the site is generated under `/var/www/htdocs/`.
+
+	$ mkdir /home/lavish/mysite
+	$ cd /home/lavish/mysite
+	$ echo "Hi all" > index.md
+	$ echo "List of my publications" > publications.md
+	$ echo "You can send me a postcard here..." > contacts.md
+	$ mkdir software
+	$ echo "I contributed to the following projects..." > software/index.md
+	$ echo "A great editor" > software/vim.md
+	$ echo "A great mail client" > software/mutt.md
+	$ echo "A great irc client" > software/irssi.md
+	$ minimalsite.py -s /home/lavish/mysite -d /var/www/htdocs \
+	                 -t /usr/local/share/minimalsite/default_template.py
+	[*] Processing files from /home/lavish/mysite
+	[*] Writing html files into /var/www/htdocs
+	    /var/www/htdocs/contacts.html
+	    /var/www/htdocs/index.html
+	    /var/www/htdocs/software
+		/var/www/htdocs/software/irssi.html
+		/var/www/htdocs/software/index.html
+		/var/www/htdocs/software/vim.html
+		/var/www/htdocs/software/mutt.html
+	    /var/www/htdocs/publications.html
+	$
 
 
 ### Misc
