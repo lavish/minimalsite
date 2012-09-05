@@ -42,136 +42,158 @@ dst_ext = "html"
 # the menu
 hidden = set(["404.md", "500.md", "search.md"])
 
+# specify title and description for the following pages
+pages = {"foo.md": ("Adventures of Foo", "Read everything about the mighty adventures of Foo in the World of Baz!"),
+         "bar.md": ("All about Bar", "It's a sad story, but worth reading...")}
 
+# get current time
 current_time = datetime.datetime.now()
+# global variable for storing menu code
 menu_code = ''
 
-def menu(node):
-	global menu_code
+def get_page_contents(node):
+    """Return page title and description from the global variable pages if a
+    match with current node page.src_file is found.
+    """ 
 
-	menu_code = '\n'
-	root = node
-	while root.parent:
-		root = root.parent
-	menu_(root, node)
-	return menu_code
+    try:
+        return (site_name + ' | ' + pages[node.page.src_file][0], \
+            pages[node.page.src_file][1])
+    except KeyError:
+        return ('%%%TITLE%%%', '')
+
+def menu(node):
+    """Generate a hierarchical menu."""
+
+    global menu_code
+
+    menu_code = '\n'
+    root = node
+    while root.parent:
+        root = root.parent
+    menu_(root, node)
+    return menu_code
 
 def menu_(node, cur_node, node_prefix = prefix, indent = ''):
-	global menu_code
+    """Auxiliary recursive function for menu generation."""
 
-	menu_code += indent + '<ul>\n'
-	for child in sorted(node.children, key=lambda n: n.page.src_pathname):
-		if child.page.dst_file.startswith("index.") or child.page.src_file in hidden:
-			continue
-		menu_code += indent + '<li class="level-' + str(child.page.level) + '"><a '
-		if(child == cur_node
-		or (cur_node.page.dst_file.startswith("index.") and child == cur_node.parent)):
-			menu_code += 'class="current" '
-		menu_code += 'href="' + node_prefix + child.page.dst_file
-		if child.children:
-			menu_code += "/index." + dst_ext + '">'	+ child.page.name + '</a>\n'
-			menu_(child, cur_node, node_prefix + child.page.dst_file + '/', indent + '\t')
-			menu_code += indent + '</li>\n'
-		else:
-			menu_code += '">'   + child.page.name + '</a></li>\n'
-	menu_code += indent + '</ul>\n'
+    global menu_code
+
+    menu_code += indent + '<ul>\n'
+    for child in sorted(node.children, key=lambda n: n.page.src_pathname):
+        if child.page.dst_file.startswith("index.") or child.page.src_file in hidden:
+            continue
+        menu_code += indent + '<li class="level-' + str(child.page.level) + '"><a '
+        if(child == cur_node
+        or (cur_node.page.dst_file.startswith("index.") and child == cur_node.parent)):
+            menu_code += 'class="current" '
+        menu_code += 'href="' + node_prefix + child.page.dst_file
+        if child.children:
+            menu_code += "/index." + dst_ext + '">'    + child.page.name + '</a>\n'
+            menu_(child, cur_node, node_prefix + child.page.dst_file + '/', indent + '\t')
+            menu_code += indent + '</li>\n'
+        else:
+            menu_code += '">'   + child.page.name + '</a></li>\n'
+    menu_code += indent + '</ul>\n'
 
 def header(node):
-	"""Build the header and return it to a string."""
-	
-	return '''<!DOCTYPE html>
+    """Build the header and return it to a string."""
+
+    (title, description) = get_page_contents(node)
+    return '''<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="author" content="''' + author + '''" />
-        <title>%%%TITLE%%%</title>
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<style type="text/css">
-			#container {
-				width: 80%;
-				margin: 30px auto;
-			}
-			#content {
-				margin-left: 170px;
-				text-align: justify;
-			}
-			#edit {
-				clear: both;
-				text-align: right;
-				font-size: small;
-			}
-			footer {
-				clear: both;
-			}
-			nav {
-				float: left;
-				width: 160px;
-			}
-			nav li a.current {
-				background-color: blue;
-				color: #ffffff;
-				font-weight: bold;
-			}
-			nav ul {
-				margin: 0;
-				padding: 0;
-				list-style: none;
-				width: 150px; /* Width of Menu Items */
-				border-bottom: 1px solid #ccc;
-			}
-			nav ul li {
-				position: relative;
-			}
-			nav li ul {
-				position: absolute;
-				left: 149px; /* Set 1px less than menu width */
-				top: 0;
-				display: none;
-			}
-			/* Styles for Menu Items */
-			nav ul li a {
-				display: block;
-				text-decoration: none;
-				color: #777;
-				background: #fff; /* IE6 Bug */
-				padding: 5px;
-				border: 1px solid #ccc; /* IE6 Bug */
-				border-bottom: 0;
-			}
-			/* Holly Hack. IE Requirement \*/
-			* html ul li { float: left; height: 1%; }
-			* html ul li a { height: 1%; }
-			/* End */
-			nav li:hover ul, li.over ul { display: block; } /* The magic */
-		</style>
-	</head>
-	<body>
-		<div id="container">
-			<header>
-				<h1><a href="''' + '../' * node.page.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
-			</header>
-			<div id="path">
-				You are here: %%%PATH%%%
-			</div>
-			<div id="main">
-				<nav>
-					''' + menu(node) + '''
-				</nav>
-				<div id="content">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="author" content="''' + author + '''" />
+        <title>''' + title + '''</title>
+        <meta name="description" content="''' + description + '''" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <style type="text/css">
+            #container {
+                width: 80%;
+                margin: 30px auto;
+            }
+            #content {
+                margin-left: 170px;
+                text-align: justify;
+            }
+            #edit {
+                clear: both;
+                text-align: right;
+                font-size: small;
+            }
+            footer {
+                clear: both;
+            }
+            nav {
+                float: left;
+                width: 160px;
+            }
+            nav li a.current {
+                background-color: blue;
+                color: #ffffff;
+                font-weight: bold;
+            }
+            nav ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                width: 150px; /* Width of Menu Items */
+                border-bottom: 1px solid #ccc;
+            }
+            nav ul li {
+                position: relative;
+            }
+            nav li ul {
+                position: absolute;
+                left: 149px; /* Set 1px less than menu width */
+                top: 0;
+                display: none;
+            }
+            /* Styles for Menu Items */
+            nav ul li a {
+                display: block;
+                text-decoration: none;
+                color: #777;
+                background: #fff; /* IE6 Bug */
+                padding: 5px;
+                border: 1px solid #ccc; /* IE6 Bug */
+                border-bottom: 0;
+            }
+            /* Holly Hack. IE Requirement \*/
+            * html ul li { float: left; height: 1%; }
+            * html ul li a { height: 1%; }
+            /* End */
+            nav li:hover ul, li.over ul { display: block; } /* The magic */
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <header>
+                <h1><a href="''' + '../' * node.page.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
+            </header>
+            <div id="path">
+                You are here: %%%PATH%%%
+            </div>
+            <div id="main">
+                <nav>
+                    ''' + menu(node) + '''
+                </nav>
+                <div id="content">
 '''
 
 def footer(node):
-	"""Build the footer and return it to a string."""
+    """Build the footer and return it to a string."""
 
-	return '''
-				</div>
-				<div id="edit">
-					Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.page.src_pathname))) + '''
-				</div>
-			</div>
-			<footer>
-				&copy; ''' + str(current_time.year) + ' ' + author + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
-			</footer>
-		</div>
-	</body>
+    return '''
+                </div>
+                <div id="edit">
+                    Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.page.src_pathname))) + '''
+                </div>
+            </div>
+            <footer>
+                &copy; ''' + str(current_time.year) + ' ' + author + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
+            </footer>
+        </div>
+    </body>
 </html>'''

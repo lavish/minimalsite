@@ -10,21 +10,28 @@ FUNCTIONS
     footer(node)
         Build the footer and return it to a string.
     
+    get_page_contents(node)
+        Return page title and description from the global variable pages if a
+        match with current node page.src_file is found.
+    
     header(node)
         Build the header and return it to a string.
     
     menu(node)
+        Generate a hierarchical menu.
     
     menu_(node, cur_node, node_prefix='/', indent='')
+        Auxiliary recursive function for menu generation.
 
 DATA
     author = 'Marco Squarcina'
-    current_time = datetime.datetime(2012, 9, 4, 1, 10, 50, 549896)
+    current_time = datetime.datetime(2012, 9, 5, 11, 11, 48, 798543)
     dst = ''
     dst_ext = 'html'
     hidden = set(['404.md', '500.md', 'search.md'])
     home = 'home'
     menu_code = ''
+    pages = {'bar.md': ('All about Bar', "It's a sad story, but worth read...
     path_separator = '<span class="separator">/</span>'
     prefix = '/'
     site_name = 'My HTML5 Website'
