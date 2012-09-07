@@ -302,7 +302,7 @@ def check_template():
 
     template_data = dir(template)
     required_data = ['dst', 'dst_ext', 'footer', 'header', 'hidden', 'home', \
-        'path_separator', 'prefix', 'site_name', 'src', 'src_ext']
+        'path_separator', 'prefix', 'sitemap', 'site_name', 'src', 'src_ext', 'url']
     for data in required_data:
         if not data in template_data:
             die("Missing {} definition in template file. Aborting.".format(data))
