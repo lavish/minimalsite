@@ -1,4 +1,3 @@
-import os
 import time
 import datetime
 
@@ -17,6 +16,14 @@ src = ""
 # "/var/www/marco/htdocs". It is not mandatory to set this value here, you can
 # specify the value of this variable at runtime, see minimalsite.py -h
 dst = ""
+
+# specify a file name for the XML sitemap. If blank, no sitemap will be written
+# on the filesystem. It's also possible to set this parameter at runtime using
+# 'minimalsite -m'
+sitemap = ""
+
+# the url of your site. Mainly used for sitemap generation
+url = "http://www.example.org"
 
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user/"
@@ -105,8 +112,9 @@ def header(node):
     <head>
         <meta charset="utf-8" />
         <meta name="author" content="''' + author + '''" />
-        <title>''' + title + '''</title>
+        <meta name="generator" content="minimalsite-%%%VERSION%%%" />
         <meta name="description" content="''' + description + '''" />
+        <title>''' + title + '''</title>
         <link rel="shortcut icon" href="/favicon.ico" />
         <style type="text/css">
             #container {
@@ -188,7 +196,7 @@ def footer(node):
     return '''
                 </div>
                 <div id="edit">
-                    Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p",time.localtime(os.path.getmtime(node.page.src_pathname))) + '''
+                    Last edit: ''' + time.strftime("%m/%d/%Y %I:%M:%S %p", node.page.last_edit) + '''
                 </div>
             </div>
             <footer>

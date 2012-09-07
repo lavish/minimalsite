@@ -27,6 +27,7 @@ CLASSES
      |      dst_file        file name of the generated file
      |      name            file name of the generated file without extension
      |      level           depth level in the site hierarchy
+     |      last_edit       time.struct_time date of source file last edit
      |  
      |  Methods defined here:
      |  
@@ -65,6 +66,9 @@ CLASSES
      |  
      |  write(self, margin='')
      |      Write the generated site on the file system.
+     |  
+     |  write_sitemap(self)
+     |      Write an XML sitemap to the file system.
 
 FUNCTIONS
     check_template()

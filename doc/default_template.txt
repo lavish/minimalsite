@@ -15,7 +15,7 @@ FUNCTIONS
 
 DATA
     author = 'Author Name'
-    current_time = datetime.datetime(2012, 9, 5, 11, 11, 48, 744959)
+    current_time = datetime.datetime(2012, 9, 7, 2, 43, 3, 256106)
     dst = ''
     dst_ext = 'html'
     hidden = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....
@@ -23,7 +23,9 @@ DATA
     path_separator = '/'
     prefix = '/'
     site_name = 'My Site'
+    sitemap = ''
     src = ''
     src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+    url = 'http://www.example.org'
 
 

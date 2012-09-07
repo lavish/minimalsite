@@ -25,7 +25,7 @@ FUNCTIONS
 
 DATA
     author = 'Marco Squarcina'
-    current_time = datetime.datetime(2012, 9, 5, 11, 11, 48, 798543)
+    current_time = datetime.datetime(2012, 9, 7, 2, 43, 3, 307507)
     dst = ''
     dst_ext = 'html'
     hidden = set(['404.md', '500.md', 'search.md'])
@@ -35,7 +35,9 @@ DATA
     path_separator = '<span class="separator">/</span>'
     prefix = '/'
     site_name = 'My HTML5 Website'
+    sitemap = ''
     src = ''
     src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+    url = 'http://www.example.org'
 
 

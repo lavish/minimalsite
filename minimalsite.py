@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import imp
+import time
 import string
 import codecs
 import argparse
@@ -48,6 +49,7 @@ class Page:
         dst_file        file name of the generated file
         name            file name of the generated file without extension
         level           depth level in the site hierarchy
+        last_edit       time.struct_time date of source file last edit
     """
 
     def __init__(self, src_pathname, level):
@@ -57,6 +59,7 @@ class Page:
         self.dst_file = os.path.basename(self.dst_pathname)
         self.name = self._get_name()
         self.level = level
+        self.last_edit = time.localtime(os.path.getmtime(self.src_pathname))
 
     def _get_dst_pathname(self):
         """Get destination pathname from source pathname."""
@@ -201,6 +204,32 @@ class TreeNode:
                     .format(traversal, template.dst_ext, path_node[i].page.name, template.path_separator)
         return path
 
+    def write_sitemap(self):
+        """Write an XML sitemap to the file system."""
+
+        fp = open(template.sitemap, 'w')
+        fp.write('{}\n{}\n{}\n{}'.format('<?xml version="1.0" encoding="UTF-8"?>', \
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', \
+            self._get_sitemap_entries(template.url + template.prefix), \
+            '</urlset>'))
+        fp.close()
+        
+    def _get_sitemap_entries(self, prefix):
+        """Recursively return the XML entry for sitemap."""
+
+        xml = ""
+        if self.children:
+            for child in self.children:
+                if not child.page.src_file in template.hidden:
+                    if self.page.level:
+                        xml += child._get_sitemap_entries(prefix + self.page.dst_file + '/')
+                    else:
+                        xml += child._get_sitemap_entries(prefix)
+        else:
+            xml = "  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n  </url>\n" \
+                .format(prefix + self.page.dst_file, time.strftime("%Y-%m-%d", self.page.last_edit))
+        return xml
+
     def _write_page(self):
         """Write a single page on the file system."""
 
@@ -223,6 +252,7 @@ class TreeNode:
         dst_content = dst_content.replace("%%%TITLE%%%", self.title())
         dst_content = dst_content.replace("%%%PATH%%%", self.path())
         dst_content = dst_content.replace("%%%MENU%%%", self.menu())
+        dst_content = dst_content.replace("%%%VERSION%%%", __version__)
         # write destionation file
         h_dst_pathname = codecs.open(self.page.dst_pathname, "w", "utf-8")
         h_dst_pathname.write(dst_content)
@@ -300,6 +330,8 @@ def main():
         help='source dir, where the textual hierarchy resides')
     parser.add_argument('-d', '--dst', type=str, default=None, \
         help='destination dir, where the html pages will be written')
+    parser.add_argument('-m', '--sitemap', type=str, default=None, \
+        help='full path name for the XML sitemap')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s-'+__version__)
     args = parser.parse_args()
 
@@ -318,6 +350,9 @@ def main():
         template.src = args.src
     if args.dst:
         template.dst = args.dst
+    # assign sitemap pathname
+    if args.sitemap:
+        template.sitemap = args.sitemap
     # fix trailing slashes
     template.src = os.path.abspath(template.src)
     template.dst = os.path.abspath(template.dst)
@@ -331,6 +366,10 @@ def main():
     root.build()
     notice('Writing {} files into {}'.format(template.dst_ext, template.dst))
     root.write()
+    # write sitemap
+    if template.sitemap:
+        notice('Writing sitemap to {}'.format(template.sitemap))
+        root.write_sitemap()
     if args.verbose:
         notice('Printing site structure')
         notice('values as: <src_pathname, dst_pathname, src_file, dst_file, name, level>')
