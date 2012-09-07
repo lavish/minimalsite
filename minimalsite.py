@@ -208,7 +208,7 @@ class TreeNode:
         """Write an XML sitemap to the file system."""
 
         fp = open(template.sitemap, 'w')
-        fp.write('{}\n{}\n{}\n{}'.format('<?xml version="1.0" encoding="UTF-8"?>', \
+        fp.write('{}\n{}\n{}{}'.format('<?xml version="1.0" encoding="UTF-8"?>', \
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', \
             self._get_sitemap_entries(template.url + template.prefix), \
             '</urlset>'))
