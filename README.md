@@ -92,7 +92,8 @@ using the default template. Source markdown files are written under
 	$ echo "A great mail client" > software/mutt.md
 	$ echo "A great irc client" > software/irssi.md
 	$ minimalsite.py -s /home/lavish/mysite -d /var/www/htdocs \
-	                 -t /usr/local/share/minimalsite/default_template.py
+	                 -t /usr/local/share/minimalsite/default_template.py \
+	                 -m /var/www/htdocs/sitemap.xml
 	[*] Processing files from /home/lavish/mysite
 	[*] Writing html files into /var/www/htdocs
 	    /var/www/htdocs/contacts.html
@@ -103,6 +104,7 @@ using the default template. Source markdown files are written under
 	        /var/www/htdocs/software/vim.html
 	        /var/www/htdocs/software/mutt.html
 	    /var/www/htdocs/publications.html
+	[*] Writing sitemap to /var/www/htdocs/sitemap.xml
 	$ cp /usr/local/share/minimalsite/style.css /var/www/htdocs
 	$
 
