@@ -26,7 +26,7 @@ There's no need to install the tool: download, unpack and run.
 
 ### Running minimalsite
 
-	usage: minimalsite.py [-h] -t TEMPLATE [-V] [-s SRC] [-d DST] [-v]
+	usage: minimalsite.py [-h] -t TEMPLATE [-V] [-s SRC] [-d DST] [-v] [-m SITEMAP]
 	
 	Fast minimal static website builder
 	
@@ -38,6 +38,8 @@ There's no need to install the tool: download, unpack and run.
 	  -V, --verbose         verbosely display site structure
 	  -s SRC, --src SRC     source dir, where the textual hierarchy resides
 	  -d DST, --dst DST     destination dir, where the html pages will be written
+	  -m SITEMAP, --sitemap SITEMAP
+	                        full path name for the XML sitemap
 	  -v, --version         show program's version number and exit
 
 You must start minimalsite providing a valid template file.
