@@ -28,7 +28,8 @@ try:
 except ImportError:
     print('[!] Textile module not found, disabling textile support')
 
-__author__      = "Marco Squarcina <lavish at gmail.com>"
+__author__      = "Marco Squarcina"
+__email__       = "lavish@gmail.com"
 __license__     = "MIT"
 __copyright__   = "Copyright 2012, Marco Squarcina"
 __status__      = "Development"
