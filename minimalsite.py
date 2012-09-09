@@ -213,31 +213,30 @@ class TreeNode:
         """Write an XML sitemap to the file system."""
 
         file_desc = open(template.SITEMAP, 'w')
-        file_desc.write('{}\n{}\n{}{}'.format(
+        file_desc.write('{}\n{}\n'.format(
             '<?xml version="1.0" encoding="UTF-8"?>',
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-            self._get_sitemap_entries(template.URL + template.PREFIX),
-            '</urlset>'))
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'))
+        self._get_sitemap_entries(file_desc, template.URL + template.PREFIX)
+        file_desc.write('</urlset>')
         file_desc.close()
         
-    def _get_sitemap_entries(self, prefix):
-        """Recursively return the XML entry for sitemap."""
+    def _get_sitemap_entries(self, file_desc, prefix):
+        """Recursively write the XML entries for sitemap."""
 
-        xml = ""
         if self.children:
             for child in self.children:
                 if not child.page.src_file in template.HIDDEN:
                     if self.page.level:
                         # pylint: disable=W0212
-                        xml += child._get_sitemap_entries(prefix 
-                            + self.page.dst_file + '/')
+                        child._get_sitemap_entries(file_desc, 
+                            prefix + self.page.dst_file + '/')
                     else:
                         # pylint: disable=W0212
-                        xml += child._get_sitemap_entries(prefix)
+                        child._get_sitemap_entries(file_desc, prefix)
         else:
-            xml = "  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n  </url>\n" \
-                .format(prefix + self.page.dst_file, time.strftime("%Y-%m-%d", self.page.last_edit))
-        return xml
+            file_desc.write("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n  </url>\n" \
+                .format(prefix + self.page.dst_file,
+                time.strftime("%Y-%m-%d", self.page.last_edit)))
 
     def _write_page(self):
         """Write a single page on the file system."""
