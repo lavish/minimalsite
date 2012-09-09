@@ -211,7 +211,10 @@ class TreeNode:
     def write_sitemap(self):
         """Write an XML sitemap to the file system."""
 
-        file_desc = open(template.SITEMAP, 'w')
+        try:
+            file_desc = open(template.SITEMAP, 'w')
+        except IOError:
+            die("Unable to open {} for writing.".format(template.SITEMAP))
         file_desc.write('{}\n{}\n'.format(
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'))

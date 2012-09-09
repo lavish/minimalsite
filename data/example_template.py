@@ -50,20 +50,20 @@ DST_EXT = "html"
 HIDDEN = set(["404.md", "500.md", "search.md"])
 
 # specify title and description for the following pages
-PAGES = {"foo.md": ("Adventures of Foo", "Read everything about the mighty adventures of Foo in the World of Baz!"),
-         "bar.md": ("All about Bar", "It's a sad story, but worth reading...")}
+PAGES = {SRC + "/foo.md": ("Adventures of Foo", "Read everything about the mighty adventures of Foo in the World of Baz!"),
+         SRC + "/bar.md": ("All about Bar", "It's a sad story, but worth reading...")}
 
 # global variable for storing menu code
 menu_code = ''
 
 def get_page_contents(node):
     """Return page title and description from the global variable pages if a
-    match with current node page.src_file is found.
+    match with current node page.src_pathname is found.
     """ 
 
     try:
-        return (SITE_NAME + ' | ' + PAGES[node.page.src_file][0], \
-            PAGES[node.page.src_file][1])
+        return (SITE_NAME + ' | ' + PAGES[node.page.src_pathname][0], \
+            PAGES[node.page.src_pathname][1])
     except KeyError:
         return ('%%%TITLE%%%', '')
 
