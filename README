@@ -1,3 +1,6 @@
+minimalsite 0.99
+10 Sep 2012
+
 MinimalSite
 ===========
 
@@ -21,11 +24,19 @@ required:
 
 ### Installation
 
-There's no need to install the tool: download, unpack and run.
+Extract the archive and install it using the following commands:
+
+	$ tar xzvf minimalsite-<version>.tar.gz
+	$ cd minimalsite-<version>
+	$ sudo python setup.py install --prefix=/usr/local
+
+Minimalsite can also run without being installed. Just run the tool within its
+own directory.
 
 
 ### Running minimalsite
 
+	$ minimalsite.py --help
 	usage: minimalsite.py [-h] -t TEMPLATE [-V] [-s SRC] [-d DST] [-v] [-m SITEMAP]
 	
 	Fast minimal static website builder
@@ -58,15 +69,13 @@ your site by adding how many functions and features you want; See
 
 ### Features
 
-#### Page ordering
-
-If you need to order menu entries, add a numerical index before the pathname,
-for example:
+Minimalsite supports __page ordering__ for menu entries. Add a numerical index
+before the pathname, for example:
 
 	/home/marco/website/30_university.md
 	/home/marco/website/50_contacts.md
 
-will be written as:
+These pages will be translated to:
 
 	/var/www/marco/htdocs/university.html
 	/var/www/marco/htdocs/contacts.html
@@ -92,7 +101,7 @@ using the default template. Source markdown files are written under
 	$ echo "A great mail client" > software/mutt.md
 	$ echo "A great irc client" > software/irssi.md
 	$ minimalsite.py -s /home/lavish/mysite -d /var/www/htdocs \
-	                 -t /usr/local/share/minimalsite/default_template.py \
+			 -t /usr/local/share/minimalsite/templates/default_template.py \
 	                 -m /var/www/htdocs/sitemap.xml
 	[*] Processing files from /home/lavish/mysite
 	[*] Writing html files into /var/www/htdocs
@@ -105,7 +114,7 @@ using the default template. Source markdown files are written under
 	        /var/www/htdocs/software/mutt.html
 	    /var/www/htdocs/publications.html
 	[*] Writing sitemap to /var/www/htdocs/sitemap.xml
-	$ cp /usr/local/share/minimalsite/style.css /var/www/htdocs
+	$ cp /usr/local/share/minimalsite/templates/style.css /var/www/htdocs
 	$
 
 
