@@ -20,13 +20,10 @@ import argparse
 
 try:
     import markdown
-except ImportError:
-    print('[!] Markdown module not found, disabling markdown support')
-
-try:
     import textile
 except ImportError:
-    print('[!] Textile module not found, disabling textile support')
+    pass
+
 
 __author__      = "Marco Squarcina"
 __email__       = "lavish@gmail.com"
@@ -357,9 +354,11 @@ def main():
     # check template integrity
     check_template()
     # check markup modules
-    for markup in ('markdown', 'textile'):
-        if not markup in sys.modules:
-            del template.SRC_EXT[markup]
+    for lang in ('markdown', 'textile'):
+        if not lang in sys.modules:
+            del template.SRC_EXT[lang]
+            if args.verbose:
+                print("[!] Disabling {} support, module not found".format(lang))
     if not template.SRC_EXT:
         die("No modules for parsing files found. See README for requirements.")
     # check src and dst directories
