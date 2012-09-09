@@ -77,13 +77,20 @@ FUNCTIONS
     die(msg, code=1)
         Write an error message to stderr and exit.
     
+    has_index(pathname)
+        Check if there's an index file in the given directory pathname.
+    
     import_template(pathname)
         Load the python module in the provided file name as a template.
     
     main()
+        Main method.
     
     notice(msg)
         Write a notice message to stdout.
+    
+    syntax(pathname)
+        Return the markup language used in the given pathname.
 
 DATA
     __author__ = 'Marco Squarcina <lavish at gmail.com>'

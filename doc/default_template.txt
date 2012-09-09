@@ -14,18 +14,17 @@ FUNCTIONS
         Build the header and return it to a string.
 
 DATA
-    author = 'Author Name'
-    current_time = datetime.datetime(2012, 9, 7, 2, 43, 3, 256106)
-    dst = ''
-    dst_ext = 'html'
-    hidden = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....
-    home = 'home'
-    path_separator = '/'
-    prefix = '/'
-    site_name = 'My Site'
-    sitemap = ''
-    src = ''
-    src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
-    url = 'http://www.example.org'
+    AUTHOR = 'Author Name'
+    DST = ''
+    DST_EXT = 'html'
+    HIDDEN = set(['400.txt', '404.md', '404.tt', '500.md', '500.tt', '500....
+    HOME = 'home'
+    PATH_SEPARATOR = '/'
+    PREFIX = '/'
+    SITEMAP = ''
+    SITE_NAME = 'My Site'
+    SRC = ''
+    SRC_EXT = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+    URL = 'http://www.example.org'
 
 

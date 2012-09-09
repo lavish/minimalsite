@@ -15,7 +15,6 @@ import re
 import sys
 import imp
 import time
-import string
 import codecs
 import argparse
 
@@ -67,11 +66,12 @@ class Page:
         # replace extension
         dst_pathname = os.path.splitext(self.src_pathname)
         if dst_pathname[1]:
-            dst_pathname = os.path.join(dst_pathname[0] + '.' + template.dst_ext)
+            dst_pathname = os.path.join(dst_pathname[0] + \
+                '.' + template.DST_EXT)
         dst_pathname = ''.join(dst_pathname)
         # change destination dir
-        dst_pathname = '/'.join(template.dst.split('/')
-            + dst_pathname.split('/')[len(template.src.split('/')):])
+        dst_pathname = '/'.join(template.DST.split('/')
+            + dst_pathname.split('/')[len(template.SRC.split('/')):])
         # remove index numbers for dirs and files
         return re.sub('\/\d+_', '/', dst_pathname)
 
@@ -86,7 +86,7 @@ class Page:
         """Return a textual representation of the page."""
 
         data = "<{}, {}, {}, {}, {}, {}>"
-        return data.format(self.src_pathname, self.dst_pathname, \
+        return data.format(self.src_pathname, self.dst_pathname,
             self.src_file, self.dst_file, self.name, self.level)
 
 class TreeNode:
@@ -111,21 +111,21 @@ class TreeNode:
 
         # check if src dir includes an index file
         if self.page.level == 0 \
-        and not self._has_index(template.src):
+        and not has_index(template.SRC):
             die('Directory {} does not include a valid index file, aborting.'\
-                .format(template.src), 2)
+                .format(template.SRC), 2)
 
-        for file in os.listdir(self.page.src_pathname):
-            pathname = os.path.join(self.page.src_pathname, file)
+        for file_name in os.listdir(self.page.src_pathname):
+            pathname = os.path.join(self.page.src_pathname, file_name)
             # do not add nodes for links and files starting with '.'
-            if os.path.islink(pathname) or file[0] == ".":
+            if os.path.islink(pathname) or file_name[0] == ".":
                 continue
             # add nodes for files with an allowed extension
-            elif os.path.isfile(pathname) and self._syntax(pathname):
+            elif os.path.isfile(pathname) and syntax(pathname):
                 node = TreeNode(Page(pathname, self.page.level + 1), self)
                 self.children.append(node)
             # add nodes for directories and go on building the tree
-            elif os.path.isdir(pathname) and self._has_index(pathname):
+            elif os.path.isdir(pathname) and has_index(pathname):
                 node = TreeNode(Page(pathname, self.page.level + 1), self)
                 self.children.append(node)
                 node.build()
@@ -157,15 +157,17 @@ class TreeNode:
             page_name = self.parent.page.name
         else:
             page_name = self.page.name
-        return template.site_name + ' | ' + page_name
+        return template.SITE_NAME + ' | ' + page_name
 
     def menu(self):
         """Return the generated code for menu."""
 
         menu_code = "<ul>\n"
-        for sibling in sorted(self.parent.children, key=lambda sibling: sibling.page.src_pathname):
+        for sibling in sorted(self.parent.children, \
+        key=lambda sibling: sibling.page.src_pathname):
             # and index page or a hidden file, no need to include them
-            if sibling.page.dst_file.startswith("index.") or sibling.page.src_file in template.hidden:
+            if sibling.page.dst_file.startswith("index.") \
+            or sibling.page.src_file in template.HIDDEN:
                 continue
             # a page
             elif not sibling.children:
@@ -177,7 +179,8 @@ class TreeNode:
             # a directory
             else:
                 menu_code += '\t<li><a href="{}/index.{}">{}</a></li>\n' \
-                    .format(sibling.page.dst_file, template.dst_ext, sibling.page.name)
+                    .format(sibling.page.dst_file, template.DST_EXT, \
+                    sibling.page.name)
         menu_code += "</ul>"
         return menu_code
 
@@ -193,26 +196,29 @@ class TreeNode:
         # no need to display "index" in the path
         if path_node[-1].page.name == "index":
             path_node.pop()
-        for i in range(0, len(path_node)):
+        for i in range(len(path_node)):
             # last item, it could be current page or current dir
             if i == len(path_node) - 1:
                 path += path_node[i].page.name
             # a parent page
             else:
-                traversal = "../" * (self.page.level - path_node[i].page.level - 1)
+                traversal = "../" * \
+                    (self.page.level - path_node[i].page.level - 1)
                 path += '<a href="{}index.{}">{}</a> {} ' \
-                    .format(traversal, template.dst_ext, path_node[i].page.name, template.path_separator)
+                    .format(traversal, template.DST_EXT,    
+                    path_node[i].page.name, template.PATH_SEPARATOR)
         return path
 
     def write_sitemap(self):
         """Write an XML sitemap to the file system."""
 
-        fp = open(template.sitemap, 'w')
-        fp.write('{}\n{}\n{}{}'.format('<?xml version="1.0" encoding="UTF-8"?>', \
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', \
-            self._get_sitemap_entries(template.url + template.prefix), \
+        file_desc = open(template.SITEMAP, 'w')
+        file_desc.write('{}\n{}\n{}{}'.format(
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+            self._get_sitemap_entries(template.URL + template.PREFIX),
             '</urlset>'))
-        fp.close()
+        file_desc.close()
         
     def _get_sitemap_entries(self, prefix):
         """Recursively return the XML entry for sitemap."""
@@ -220,10 +226,13 @@ class TreeNode:
         xml = ""
         if self.children:
             for child in self.children:
-                if not child.page.src_file in template.hidden:
+                if not child.page.src_file in template.HIDDEN:
                     if self.page.level:
-                        xml += child._get_sitemap_entries(prefix + self.page.dst_file + '/')
+                        # pylint: disable=W0212
+                        xml += child._get_sitemap_entries(prefix 
+                            + self.page.dst_file + '/')
                     else:
+                        # pylint: disable=W0212
                         xml += child._get_sitemap_entries(prefix)
         else:
             xml = "  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n  </url>\n" \
@@ -234,19 +243,19 @@ class TreeNode:
         """Write a single page on the file system."""
 
         # open source file
-        h_src_pathname = codecs.open(self.page.src_pathname, "r", "utf-8");
+        h_src_pathname = codecs.open(self.page.src_pathname, "r", "utf-8")
         src_content = h_src_pathname.read()
         h_src_pathname.close()
         # build page
         dst_content = template.header(self)
-        if self._syntax(self.page.src_pathname) == "markdown" \
-        and "markdown" in template.src_ext:
+        if syntax(self.page.src_pathname) == "markdown" \
+        and "markdown" in template.SRC_EXT:
             dst_content += markdown.markdown(src_content)
-        elif self._syntax(self.page.src_pathname) == "textile" \
-        and "textile" in template.src_ext:
+        elif syntax(self.page.src_pathname) == "textile" \
+        and "textile" in template.SRC_EXT:
             dst_content += textile.textile(src_content)
-        elif self._syntax(self.page.src_pathname) == "plain" \
-        and "plain" in template.src_ext:
+        elif syntax(self.page.src_pathname) == "plain" \
+        and "plain" in template.SRC_EXT:
             dst_content += src_content
         dst_content += template.footer(self)
         dst_content = dst_content.replace("%%%TITLE%%%", self.title())
@@ -257,21 +266,6 @@ class TreeNode:
         h_dst_pathname = codecs.open(self.page.dst_pathname, "w", "utf-8")
         h_dst_pathname.write(dst_content)
         h_dst_pathname.close()
-
-    def _syntax(self, pathname):
-        """Return the markup language used in the given pathname."""
-
-        for lang in list(template.src_ext.keys()):
-            if template.src_ext[lang] == pathname.split('.')[-1]:
-                    return lang
-
-    def _has_index(self, pathname):
-        """Check if there's an index file in the given directory pathname."""
-
-        for lang in list(template.src_ext.keys()):
-            if os.path.isfile(pathname + "/index." + template.src_ext[lang]):
-                return True
-        return False
 
     def __str__(self):
         """Return the entire tree structure."""
@@ -284,6 +278,23 @@ class TreeNode:
 
 # function definitions
 
+def syntax(pathname):
+    """Return the markup language used in the given pathname."""
+
+    for lang in list(template.SRC_EXT.keys()):
+        if template.SRC_EXT[lang] == pathname.split('.')[-1]:
+            return lang
+    return None
+
+def has_index(pathname):
+    """Check if there's an index file in the given directory pathname."""
+
+    for lang in list(template.SRC_EXT.keys()):
+        if os.path.isfile(pathname + "/index." + template.SRC_EXT[lang]):
+            return True
+    return False
+
+
 def import_template(pathname):
     """Load the python module in the provided file name as a template."""
 
@@ -292,8 +303,8 @@ def import_template(pathname):
     (path, name) = os.path.split(pathname)
     (name, ext) = os.path.splitext(name)
     if ext == '.py' and name.endswith('_template'):
-        (fd, pathname, data) = imp.find_module(name, [path])
-        return imp.load_module(name, fd, pathname, data)
+        (file_desc, pathname, data) = imp.find_module(name, [path])
+        return imp.load_module(name, file_desc, pathname, data)
     else:
         die("Invalid template file name. Valid templates must terminate with '_template.py'.")
 
@@ -301,11 +312,13 @@ def check_template():
     """Check mandatory variable/function definitions in the provided template."""
 
     template_data = dir(template)
-    required_data = ['dst', 'dst_ext', 'footer', 'header', 'hidden', 'home', \
-        'path_separator', 'prefix', 'sitemap', 'site_name', 'src', 'src_ext', 'url']
+    required_data = ['DST', 'DST_EXT', 'HIDDEN', 'HOME', 'PATH_SEPARATOR', \
+        'PREFIX', 'SITEMAP', 'SITE_NAME', 'SRC', 'SRC_EXT', 'URL', \
+        'footer', 'header']
     for data in required_data:
         if not data in template_data:
-            die("Missing {} definition in template file. Aborting.".format(data))
+            die("Missing {} definition in template file. Aborting." \
+                .format(data))
 
 def notice(msg):
     """Write a notice message to stdout."""
@@ -319,9 +332,12 @@ def die(msg, code=1):
     sys.exit(code)
 
 def main():
+    """Main method."""
+
     global template
 
-    parser = argparse.ArgumentParser(description='Fast minimal static website builder')
+    parser = argparse.ArgumentParser(description = \
+        'Fast minimal static website builder')
     parser.add_argument('-t', '--template', type=str, required=True, \
         help="specify a template file name. Valid templates must terminate with '_template.py'")
     parser.add_argument('-V', '--verbose', action='store_true', \
@@ -332,7 +348,8 @@ def main():
         help='destination dir, where the html pages will be written')
     parser.add_argument('-m', '--sitemap', type=str, default=None, \
         help='full path name for the XML sitemap')
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s-'+__version__)
+    parser.add_argument('-v', '--version', action='version', \
+        version='%(prog)s-'+__version__)
     args = parser.parse_args()
 
     # load template
@@ -342,33 +359,33 @@ def main():
     # check markup modules
     for markup in ('markdown', 'textile'):
         if not markup in sys.modules:
-            del template.src_ext[markup]
-    if not template.src_ext:
+            del template.SRC_EXT[markup]
+    if not template.SRC_EXT:
         die("No modules for parsing files found. See README for requirements.")
     # check src and dst directories
     if args.src:
-        template.src = args.src
+        template.SRC = args.src
     if args.dst:
-        template.dst = args.dst
+        template.DST = args.dst
     # assign sitemap pathname
     if args.sitemap:
-        template.sitemap = args.sitemap
+        template.SITEMAP = args.sitemap
     # fix trailing slashes
-    template.src = os.path.abspath(template.src)
-    template.dst = os.path.abspath(template.dst)
-    for directory in [template.src, template.dst]:
+    template.SRC = os.path.abspath(template.SRC)
+    template.DST = os.path.abspath(template.DST)
+    for directory in [template.SRC, template.DST]:
         if not os.path.isdir(directory):
             die('Directory {} does not exist, aborting.'.format(directory), 2)
     # start writing pages
-    notice('Processing files from {}'.format(template.src))
-    root = TreeNode(Page(template.src, 0))
-    root.page.name = template.home
+    notice('Processing files from {}'.format(template.SRC))
+    root = TreeNode(Page(template.SRC, 0))
+    root.page.name = template.HOME
     root.build()
-    notice('Writing {} files into {}'.format(template.dst_ext, template.dst))
+    notice('Writing {} files into {}'.format(template.DST_EXT, template.DST))
     root.write()
     # write sitemap
-    if template.sitemap:
-        notice('Writing sitemap to {}'.format(template.sitemap))
+    if template.SITEMAP:
+        notice('Writing sitemap to {}'.format(template.SITEMAP))
         root.write_sitemap()
     if args.verbose:
         notice('Printing site structure')

@@ -1,60 +1,59 @@
+import os
 import time
 import datetime
 
 # the name of your site
-site_name = "My HTML5 Website"
+SITE_NAME = "My HTML5 Website"
 
 # your name
-author = "Marco Squarcina"
+AUTHOR = "Marco Squarcina"
 
 # source dir containing the markup file hierarchy, like
 # "/home/marco/website/src". It is not mandatory to set this value here, you
 # can specify the value of this variable at runtime, see minimalsite.py -h
-src = ""
+SRC = ""
 
 # destination dir for your site, usually under the webroot pathname, like
 # "/var/www/marco/htdocs". It is not mandatory to set this value here, you can
 # specify the value of this variable at runtime, see minimalsite.py -h
-dst = ""
+DST = ""
 
 # specify a file name for the XML sitemap. If blank, no sitemap will be written
 # on the filesystem. It's also possible to set this parameter at runtime using
 # 'minimalsite -m'
-sitemap = ""
+SITEMAP = ""
 
 # the url of your site. Mainly used for sitemap generation
-url = "http://www.example.org"
+URL = "http://www.example.org"
 
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user/"
-prefix = "/"
+PREFIX = "/"
 
 # the name used for referring to the home page. This variable sets the name for
 # the first entry in the navigation path
-home = "home"
+HOME = "home"
 
 # the separator character used for the navigation path
-path_separator = '<span class="separator">/</span>'
+PATH_SEPARATOR = '<span class="separator">/</span>'
 
 # set the extensions used for markdown, textile and plain files that don't need
 # to be parsed
-src_ext = {"markdown": "md", "textile": "tt", "plain": "txt"}
+SRC_EXT = {"markdown": "md", "textile": "tt", "plain": "txt"}
 
 
 # set the extension used for destination files. For example if you plan to
 # embed php code you can write "php" here
-dst_ext = "html"
+DST_EXT = "html"
 
 # set the list of pages that should be parsed but you don't want to display n
 # the menu
-hidden = set(["404.md", "500.md", "search.md"])
+HIDDEN = set(["404.md", "500.md", "search.md"])
 
 # specify title and description for the following pages
-pages = {"foo.md": ("Adventures of Foo", "Read everything about the mighty adventures of Foo in the World of Baz!"),
+PAGES = {"foo.md": ("Adventures of Foo", "Read everything about the mighty adventures of Foo in the World of Baz!"),
          "bar.md": ("All about Bar", "It's a sad story, but worth reading...")}
 
-# get current time
-current_time = datetime.datetime.now()
 # global variable for storing menu code
 menu_code = ''
 
@@ -64,8 +63,8 @@ def get_page_contents(node):
     """ 
 
     try:
-        return (site_name + ' | ' + pages[node.page.src_file][0], \
-            pages[node.page.src_file][1])
+        return (SITE_NAME + ' | ' + PAGES[node.page.src_file][0], \
+            PAGES[node.page.src_file][1])
     except KeyError:
         return ('%%%TITLE%%%', '')
 
@@ -81,14 +80,14 @@ def menu(node):
     menu_(root, node)
     return menu_code
 
-def menu_(node, cur_node, node_prefix = prefix, indent = ''):
+def menu_(node, cur_node, node_prefix = PREFIX, indent = ''):
     """Auxiliary recursive function for menu generation."""
 
     global menu_code
 
     menu_code += indent + '<ul>\n'
     for child in sorted(node.children, key=lambda n: n.page.src_pathname):
-        if child.page.dst_file.startswith("index.") or child.page.src_file in hidden:
+        if child.page.dst_file.startswith("index.") or child.page.src_file in HIDDEN:
             continue
         menu_code += indent + '<li class="level-' + str(child.page.level) + '"><a '
         if(child == cur_node
@@ -96,7 +95,7 @@ def menu_(node, cur_node, node_prefix = prefix, indent = ''):
             menu_code += 'class="current" '
         menu_code += 'href="' + node_prefix + child.page.dst_file
         if child.children:
-            menu_code += "/index." + dst_ext + '">'    + child.page.name + '</a>\n'
+            menu_code += "/index." + DST_EXT + '">'    + child.page.name + '</a>\n'
             menu_(child, cur_node, node_prefix + child.page.dst_file + '/', indent + '\t')
             menu_code += indent + '</li>\n'
         else:
@@ -111,7 +110,7 @@ def header(node):
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <meta name="author" content="''' + author + '''" />
+        <meta name="author" content="''' + AUTHOR + '''" />
         <meta name="generator" content="minimalsite-%%%VERSION%%%" />
         <meta name="description" content="''' + description + '''" />
         <title>''' + title + '''</title>
@@ -178,7 +177,7 @@ def header(node):
     <body>
         <div id="container">
             <header>
-                <h1><a href="''' + '../' * node.page.level + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
+                <h1><a href="''' + '../' * node.page.level + '''index.''' + DST_EXT + '''">''' + SITE_NAME + '''</a></h1>
             </header>
             <div id="path">
                 You are here: %%%PATH%%%
@@ -193,6 +192,7 @@ def header(node):
 def footer(node):
     """Build the footer and return it to a string."""
 
+    current_time = datetime.datetime.now()
     return '''
                 </div>
                 <div id="edit">
@@ -200,7 +200,7 @@ def footer(node):
                 </div>
             </div>
             <footer>
-                &copy; ''' + str(current_time.year) + ' ' + author + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
+                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
             </footer>
         </div>
     </body>

@@ -24,20 +24,19 @@ FUNCTIONS
         Auxiliary recursive function for menu generation.
 
 DATA
-    author = 'Marco Squarcina'
-    current_time = datetime.datetime(2012, 9, 7, 2, 43, 3, 307507)
-    dst = ''
-    dst_ext = 'html'
-    hidden = set(['404.md', '500.md', 'search.md'])
-    home = 'home'
+    AUTHOR = 'Marco Squarcina'
+    DST = ''
+    DST_EXT = 'html'
+    HIDDEN = set(['404.md', '500.md', 'search.md'])
+    HOME = 'home'
+    PAGES = {'bar.md': ('All about Bar', "It's a sad story, but worth read...
+    PATH_SEPARATOR = '<span class="separator">/</span>'
+    PREFIX = '/'
+    SITEMAP = ''
+    SITE_NAME = 'My HTML5 Website'
+    SRC = ''
+    SRC_EXT = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
+    URL = 'http://www.example.org'
     menu_code = ''
-    pages = {'bar.md': ('All about Bar', "It's a sad story, but worth read...
-    path_separator = '<span class="separator">/</span>'
-    prefix = '/'
-    site_name = 'My HTML5 Website'
-    sitemap = ''
-    src = ''
-    src_ext = {'markdown': 'md', 'plain': 'txt', 'textile': 'tt'}
-    url = 'http://www.example.org'
 
 

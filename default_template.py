@@ -1,54 +1,52 @@
 import datetime
 
 # the name of your site
-site_name = "My Site"
+SITE_NAME = "My Site"
 
 # your name
-author = "Author Name"
+AUTHOR = "Author Name"
 
 # source dir containing the markup file hierarchy, like
 # "/home/marco/website/src". It is not mandatory to set this value here, you
 # can specify the value of this variable at runtime, see 'minimalsite -h'
-src = ""
+SRC = ""
 
 # destination dir for your site, usually under the webroot pathname, like
 # "/var/www/marco/htdocs". It is not mandatory to set this value here, you can
 # specify the value of this variable at runtime, see 'minimalsite -h'
-dst = ""
+DST = ""
 
 # specify a file name for the XML sitemap. If blank, no sitemap will be written
 # on the filesystem. It's also possible to set this parameter at runtime using
 # 'minimalsite -m'
-sitemap = ""
+SITEMAP = ""
 
 # the url of your site. Mainly used for sitemap generation
-url = "http://www.example.org"
+URL = "http://www.example.org"
 
 # the path under where your site will be shown. For example if you access to
 # your site via http://www.domain.com/user/, set prefix = "/user/"
-prefix = "/"
+PREFIX = "/"
 
 # the name used for referring to the home page. This variable sets the name for
 # the first entry in the navigation path
-home = "home"
+HOME = "home"
 
 # the separator character used for the navigation path
-path_separator = "/"
+PATH_SEPARATOR = "/"
 
 # set the extensions used for markdown, textile and plain files that don't need
 # to be parsed
-src_ext = {"markdown": "md", "textile": "tt", "plain": "txt"}
+SRC_EXT = {"markdown": "md", "textile": "tt", "plain": "txt"}
 
 # set the extension used for destination files. For example if you plan to
 # embed php code you can write "php" here
-dst_ext = "html"
+DST_EXT = "html"
 
 # set the list of pages that should be parsed but you don't want to display n
 # the menu
-hidden = set(["404.md", "500.md", "404.tt", "500.tt", "400.txt", "500.txt"])
+HIDDEN = set(["404.md", "500.md", "404.tt", "500.tt", "400.txt", "500.txt"])
 
-
-current_time = datetime.datetime.now()
 
 def header(node):
     """Build the header and return it to a string."""
@@ -57,7 +55,7 @@ def header(node):
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-        <meta name="author" content="''' + author + '''" />
+        <meta name="author" content="''' + AUTHOR + '''" />
         <meta name="generator" content="minimalsite-%%%VERSION%%%" />
         <title>%%%TITLE%%%</title>
         <link href="''' + '../' * (node.page.level-1) + '''style.css" rel="stylesheet" type="text/css" media="screen" />
@@ -65,7 +63,7 @@ def header(node):
     <body>
         <div id="container">
             <div id="header">
-                <h1><a href="''' + '../' * (node.page.level-1) + '''index.''' + dst_ext + '''">''' + site_name + '''</a></h1>
+                <h1><a href="''' + '../' * (node.page.level-1) + '''index.''' + DST_EXT + '''">''' + SITE_NAME + '''</a></h1>
             </div>
             <div id="path">
                 You are here: %%%PATH%%%
@@ -80,6 +78,7 @@ def header(node):
 def footer(node):
     """Build the footer and return it to a string."""
 
+    current_time = datetime.datetime.now()
     return '''
                 </div>
                 <div id="clearer">
@@ -87,7 +86,7 @@ def footer(node):
                 </div>
             </div>
             <div id="footer">
-                &copy; ''' + str(current_time.year) + ' ' + author + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
+                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
             </div>
         </div>
     </body>
