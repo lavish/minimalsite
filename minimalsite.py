@@ -21,11 +21,12 @@ import argparse
 try:
     import markdown
 except ImportError:
-    pass
+    print('[!] Markdown module not found, disabling markdown support')
+
 try:
     import textile
 except ImportError:
-    pass
+    print('[!] Textile module not found, disabling textile support')
 
 __author__      = "Marco Squarcina <lavish at gmail.com>"
 __license__     = "MIT"
@@ -292,7 +293,6 @@ def has_index(pathname):
         if os.path.isfile(pathname + "/index." + template.SRC_EXT[lang]):
             return True
     return False
-
 
 def import_template(pathname):
     """Load the python module in the provided file name as a template."""
