@@ -97,7 +97,6 @@ class TreeNode:
         page        Page object
         parent      parent node, None if current node is the root
         children    list of children
-
     """
 
     def __init__(self, page, parent = None):
@@ -162,7 +161,10 @@ class TreeNode:
         """Return the generated code for menu."""
 
         menu_code = "<ul>\n"
-        for sibling in sorted(self.parent.children, \
+        if self.page.level > 1:
+            menu_code += '\t<li><a href="../index.{}">..</a></li>\n' \
+                .format(template.DST_EXT)
+        for sibling in sorted(self.parent.children,
         key=lambda sibling: sibling.page.src_pathname):
             # and index page or a hidden file, no need to include them
             if sibling.page.dst_file.startswith("index.") \
@@ -299,7 +301,7 @@ def import_template(pathname):
     """Load the python module in the provided file name as a template."""
 
     if not os.path.isfile(pathname):
-        die("Template file does not exist. Aborting.")
+        die("Template file does not exist. Aborting")
     (path, name) = os.path.split(pathname)
     (name, ext) = os.path.splitext(name)
     if ext == '.py' and name.endswith('_template'):
@@ -317,7 +319,7 @@ def check_template():
         'footer', 'header']
     for data in required_data:
         if not data in template_data:
-            die("Missing {} definition in template file. Aborting." \
+            die("Missing {} definition in template file. Aborting" \
                 .format(data))
 
 def notice(msg):

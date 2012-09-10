@@ -86,7 +86,7 @@ def footer(node):
                 </div>
             </div>
             <div id="footer">
-                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
+                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/software/minimalsite.html">minimalsite</a> 
             </div>
         </div>
     </body>

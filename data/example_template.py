@@ -199,7 +199,7 @@ def footer(node):
                 </div>
             </div>
             <footer>
-                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/projects/minimalsite.html">minimalsite</a> 
+                &copy; ''' + str(current_time.year) + ' ' + AUTHOR + ''' | Generated with <a href="http://www.minimalblue.com/software/minimalsite.html">minimalsite</a> 
             </footer>
         </div>
     </body>
