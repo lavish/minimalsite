@@ -160,10 +160,14 @@ class TreeNode:
     def menu(self):
         """Return the generated code for menu."""
 
-        menu_code = "<ul>\n"
-        if self.page.level > 1:
-            menu_code += '\t<li><a href="../index.{}">..</a></li>\n' \
-                .format(template.DST_EXT)
+        menu_code = '<ul>\n'
+        # build the 'parent page' menu entry
+        entry = '\t<li><a href="{}">&crarr;</a></li>\n'
+        if self.page.name != 'index':
+            menu_code += entry.format("index." + template.DST_EXT)
+        elif self.page.level > 1:
+            menu_code += entry.format("../index." + template.DST_EXT)
+        # build other entries
         for sibling in sorted(self.parent.children,
         key=lambda sibling: sibling.page.src_pathname):
             # and index page or a hidden file, no need to include them
