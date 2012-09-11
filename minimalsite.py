@@ -5,9 +5,8 @@ A fast minimal static website builder.
 
 Minimalsite generates web pages from a source file hierarchy. It supports
 markdown and textile syntax, but plain txt and html can be evenly used.
-Template files are python modules, providing huge flexibilty and keeping the
+Template files are python modules, providing huge flexibility and keeping the
 codebase tiny and simple.
-
 """
 
 import os
@@ -28,9 +27,7 @@ except ImportError:
 __author__      = "Marco Squarcina"
 __email__       = "lavish@gmail.com"
 __license__     = "MIT"
-__copyright__   = "Copyright 2012, Marco Squarcina"
-__status__      = "Development"
-__version__     = "0.99"
+__version__     = "1.00"
 
 
 # class definitions
@@ -75,7 +72,7 @@ class Page:
         return re.sub('\/\d+_', '/', dst_pathname)
 
     def _get_name(self):
-        """Get page name from destionation pathname."""
+        """Get page name from destination pathname."""
 
         name = os.path.basename(self.dst_pathname)
         name = os.path.splitext(name)[0]
@@ -140,7 +137,7 @@ class TreeNode:
                 pass
             else:
                 print(margin + self.page.dst_pathname)
-            # recursivly call write_tree against current node
+            # recursively call write_tree against current node
             for child in self.children:
                 child.write(margin + '    ')
         # a file
@@ -269,7 +266,7 @@ class TreeNode:
         dst_content = dst_content.replace("%%%PATH%%%", self.path())
         dst_content = dst_content.replace("%%%MENU%%%", self.menu())
         dst_content = dst_content.replace("%%%VERSION%%%", __version__)
-        # write destionation file
+        # write destination file
         h_dst_pathname = codecs.open(self.page.dst_pathname, "w", "utf-8")
         h_dst_pathname.write(dst_content)
         h_dst_pathname.close()

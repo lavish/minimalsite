@@ -1,5 +1,5 @@
-minimalsite 0.99
-10 Sep 2012
+minimalsite 1.00
+11 Sep 2012
 
 MinimalSite
 ===========
@@ -8,14 +8,14 @@ A fast minimal static website builder.
 
 Minimalsite generates web pages from a source file hierarchy. It supports
 markdown and textile syntax, but plain txt and html can be evenly used.
-Template files are python modules, providing huge flexibilty and keeping the
+Template files are python modules, providing huge flexibility and keeping the
 codebase tiny and simple.
 
 
 ### Requirements
 
 In order to run minimalsite you need a working Python 2.X or 3.X installation.
-If you plan to yse markdown or textile syntax, one of the following modules is
+If you plan to use markdown or textile syntax, one of the following modules is
 required:
 
 * [Python Markdown][] for markdown syntax support
@@ -101,7 +101,7 @@ using the default template. Source markdown files are written under
 	$ echo "A great mail client" > software/mutt.md
 	$ echo "A great irc client" > software/irssi.md
 	$ minimalsite.py -s /home/lavish/mysite -d /var/www/htdocs \
-			 -t /usr/local/share/minimalsite/templates/default_template.py \
+	                 -t /usr/local/share/minimalsite/templates/default_template.py \
 	                 -m /var/www/htdocs/sitemap.xml
 	[*] Processing files from /home/lavish/mysite
 	[*] Writing html files into /var/www/htdocs

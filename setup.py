@@ -9,7 +9,7 @@ setup(
     author = minimalsite.__author__,
     author_email = minimalsite.__email__,
     url = 'http://www.minimalblue.com/software/minimalsite.html',
-    download_url = 'https://github.com/lavish/minimalsite/zipball/master',
+    download_url = 'https://github.com/downloads/lavish/minimalsite/minimalsite-1.00.tar.gz',
     description = minimalsite.__doc__.split('\n')[1],
     long_description = minimalsite.__doc__,
     scripts = ['minimalsite.py'],
